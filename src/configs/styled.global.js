@@ -17,13 +17,12 @@ export const GlobalContent = styled(Content)`
 `;
 
 export const GlobalDescriptions = styled(Descriptions)`
-  margin-right: 20px;
   .ant-descriptions-view {
     background-color: white;
   }
   .ant-descriptions-item-label {
-    background-color: #3A6351;
-    color: #ffffff
+    /* background-color: #3A6351; */
+    /* color: #ffffff */
   }
 
 `;

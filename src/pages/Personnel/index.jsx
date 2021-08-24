@@ -8,7 +8,7 @@ const Personnel = (props) => {
       <GlobalTitle
         title="Quản lý nhân sự"
         level={3}
-        color="#3A6351"
+        color="#3eb8f8"
       />
     </GlobalContent>
   );

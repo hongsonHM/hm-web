@@ -8,7 +8,7 @@ const Supply = (props) => {
       <GlobalTitle
         title="Quản lý Vật tư"
         level={3}
-        color="#3A6351"
+        color="#3eb8f8"
       />
     </GlobalContent>
   );

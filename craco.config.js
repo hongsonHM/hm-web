@@ -14,15 +14,17 @@ module.exports = {
         lessLoaderOptions: {
           lessOptions: {
             modifyVars: {
-              "@primary-color": "#3A6351",
+              "@primary-color": "#3eb8f8",
               "@border-radius-base": "5px",
               "@text-color": "#333",
               "@typography-title-font-weight": "700",
               "@typography-title-margin-bottom": "0.4em",
               "@menu-collapsed-width": "60px",
-              "@menu-dark-bg" : '#3A6351',
-              '@table-header-bg': 'rgba(130, 214, 0, 0.1)',
-              '@table-row-hover-bg': 'rgba(130, 214, 0, 0.1)',
+              "@menu-dark-bg" : '#3eb8f8',
+              '@table-header-bg': '#3eb8f8',
+              '@table-row-hover-bg': '#3eb8f810',
+              '@table-border-radius-base': '10px',
+              '@table-header-color': '#fff'
             },
             javascriptEnabled: true,
           },

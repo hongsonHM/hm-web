@@ -1,61 +1,50 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import { Row, Col, Descriptions, Space, Select } from "antd";
 import { StyledDashboardRow } from "./styled";
 import { GlobalContent, GlobalDescriptions } from "../../configs/styled.global";
-import { FieldTimeOutlined, FileSyncOutlined, FundViewOutlined, TeamOutlined, DollarCircleOutlined, FileExclamationOutlined } from "@ant-design/icons";
+import { FieldTimeOutlined, FileSyncOutlined, FundViewOutlined, TeamOutlined, FileDoneOutlined, FileExclamationOutlined } from "@ant-design/icons";
 import GlobalTitle from "../../components/GlobalTitle";
 import { Line } from "react-chartjs-2";
-import { dashboardByTimes } from "../../configs/mock";
+import { getDashboard } from "../../apis/dashboard";
+import { friendlyStringMoney } from '../../utils'
+
 const { Option } = Select;
+const USER_HAS_CHART = ["BUSINESS_MANAGER", "BUSINESS_STAFF"];
 
 const Dashboard = (props) => {
-  const [employee, setEmployee] = useState(dashboardByTimes["7days"].employee);
-  const [turnover, setTurnover] = useState(dashboardByTimes["7days"].turnover);
-  const [expire, setExpire] = useState(dashboardByTimes["7days"].expire);
+  const [filter, setFilter] = useState('monthly');
+  const [dataOverview, setDataOverview] = useState({});
+
+  const getDataOverview = async () => {
+    const res = await getDashboard();
+    console.log(res);
+    setDataOverview(res.data)
+  }
+
+  useEffect(() => {
+    if(!dataOverview) getDataOverview()
+  }, [dataOverview]);
+
   const overview = [
-    // {
-    //   name: "Nhiệm vụ đang thực hiện",
-    //   value: 8,
-    //   icon: <FileSyncOutlined />,
-    //   className: "processing",
-    // },
-    // {
-    //   name: "Nhiệm vụ đã hoàn thành",
-    //   value: 152,
-    //   icon: <FileDoneOutlined />,
-    //   className: "done",
-    // },
-    // {
-    //   name: "Nhiệm vụ chậm tiến độ",
-    //   value: 2,
-    //   icon: <FieldTimeOutlined />,
-    //   className: "timeout",
-    // },
     {
-      name: "Số nhân công đang hoạt động",
-      value: employee,
-      icon: <TeamOutlined />,
+      name: "Nhiệm vụ đang thực hiện",
+      value: 8,
+      icon: <FileSyncOutlined />,
       className: "processing",
     },
     {
-      name: "Tổng doanh thu",
-      value: turnover,
-      icon: <DollarCircleOutlined />,
+      name: "Nhiệm vụ đã hoàn thành",
+      value: 152,
+      icon: <FileDoneOutlined />,
       className: "done",
     },
     {
-      name: "Số hợp đồng đáo hạn",
-      value: expire,
+      name: "Nhiệm vụ chậm tiến độ",
+      value: 2,
       icon: <FieldTimeOutlined />,
       className: "timeout",
     },
   ];
-
-  const handleChangeDashboard = (value) => {
-    setEmployee(dashboardByTimes[value].employee);
-    setTurnover(dashboardByTimes[value].turnover);
-    setExpire(dashboardByTimes[value].expire);
-  };
 
   const renderDashboardContent = () => {
     return overview.map((item, index) => (
@@ -95,55 +84,44 @@ const Dashboard = (props) => {
   return (
     <GlobalContent key="dashboard">
       {/* Dashboard */}
-      <GlobalTitle
-        title="Thông tin chung"
-        level={3}
-        color="#3A6351"
-        extra={
-          <Select defaultValue="7days" onChange={(value) => handleChangeDashboard(value)}>
-            <Option value="7days">7 ngày trước</Option>
-            <Option value="30days">30 ngày trước</Option>
-            <Option value="60days">60 ngày trước</Option>
-            <Option value="90days">90 ngày trước</Option>
-          </Select>
-        }
-      />
+      <GlobalTitle title="Thông tin chung" level={3} color="#3eb8f8" />
       <StyledDashboardRow justify="space-around" align="top" gutter={16}>
         {renderDashboardContent()}
       </StyledDashboardRow>
-      <br />
-      <GlobalTitle title="Thống kê" level={3} color="#3A6351" />
-      <br />
-      <Row className="flex__between__center table_with_chart">
-        <Col span={12}>
-          <GlobalDescriptions
-            bordered
-            column={1}
-            title={<Fragment>
-              <FundViewOutlined /> Thống kê hợp đồng
-            </Fragment>}
-          >
-            <Descriptions.Item label="Tổng số hợp đồng">71</Descriptions.Item>
-            <Descriptions.Item label="Hợp đồng chuẩn bị đáo hạn">4</Descriptions.Item>
-            <Descriptions.Item label="Hợp đồng đang nợ">2</Descriptions.Item>
-            <Descriptions.Item label="Hợp đồng đã dừng">271</Descriptions.Item>
-            <Descriptions.Item label="Số hợp đồng mới">89</Descriptions.Item>
-            <Descriptions.Item label="Tổng doanh thu">1.334.881.000 VNĐ</Descriptions.Item>
-          </GlobalDescriptions>
-        </Col>
-        <Col span={12}>
-          <Line height="350" width="700" data={data} />
-        </Col>
-      </Row>
-      <br />
-      <Space className="flex__start__start">
-        <GlobalDescriptions bordered column={1} title={<Fragment>
-              <TeamOutlined /> Thống kê nhân công
-            </Fragment>}>
-          <Descriptions.Item label="Tổng số nhân công">205</Descriptions.Item>
-          <Descriptions.Item label="Tổng số nhân công đang hoạt động">166</Descriptions.Item>
-        </GlobalDescriptions>
-      </Space>
+
+      {USER_HAS_CHART.includes(localStorage.roles) && (
+        <Fragment>
+          <br />
+          <GlobalTitle
+            title="Thống kê"
+            level={3}
+            color="#3eb8f8"
+            extra={
+              <Select defaultValue="30days" onChange={(value) => {}}>
+                <Option value="30days">theo tháng</Option>
+                <Option value="60days">theo quý</Option>
+              </Select>
+            }
+          />
+          <br />
+          <Row className="flex__between__center table_with_chart">
+            <Col span={11}>
+              <GlobalDescriptions bordered column={1} title={null}>
+                <Descriptions.Item label="Tổng số hợp đồng">{dataOverview.totalContract}</Descriptions.Item>
+                <Descriptions.Item label="Hợp đồng chuẩn bị đáo hạn">{dataOverview.totalContractWillBeEndIn3Month}</Descriptions.Item>
+                <Descriptions.Item label="Hợp đồng đang nợ">2</Descriptions.Item>
+                <Descriptions.Item label="Hợp đồng đã dừng">271</Descriptions.Item>
+                <Descriptions.Item label="Số hợp đồng mới">{dataOverview.totalContractNew}</Descriptions.Item>
+                <Descriptions.Item label="Tổng doanh thu">1010101</Descriptions.Item>
+                <Descriptions.Item label="Tổng số nhân viên đang hoạt động">197</Descriptions.Item>
+              </GlobalDescriptions>
+            </Col>
+            <Col span={12}>
+              <Line height="350" width="700" data={data} />
+            </Col>
+          </Row>
+        </Fragment>
+      )}
     </GlobalContent>
   );
 };

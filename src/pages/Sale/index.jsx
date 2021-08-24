@@ -8,7 +8,7 @@ const Sale = (props) => {
       <GlobalTitle
         title="Quản lý kinh doanh"
         level={3}
-        color="#3A6351"
+        color="#3eb8f8"
       />
     </GlobalContent>
   );

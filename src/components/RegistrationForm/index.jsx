@@ -2,23 +2,17 @@ import React from "react";
 import { Form, Button } from "antd";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../../stores/authSlice";
+import { setLoading } from "../../stores/commonSlice";
 import { userLogin } from "../../apis/auth";
+import { createClient } from "../../apis/contract";
 import Cookies from "js-cookie";
 import { globalMessage } from "../GlobalMessage";
-
-const MOCK_MODE = true;
-
-const layout = {
-  labelCol: { span: 24 },
-  wrapperCol: { span: 24 },
-};
 
 const RegistrationForm = (props) => {
   const dispatch = useDispatch();
   const [form] = Form.useForm();
-  const { data, type, large } = props;
+  const { data, type, large, size, layout, labelCol, wrapperCol, offsetButton } = props;
   const onFinish = (values) => {
-    console.log(values);
     submits[type].actions(values);
   };
 
@@ -26,64 +20,82 @@ const RegistrationForm = (props) => {
   const submits = {
     signin: {
       actions: async (values) => {
-        if (!MOCK_MODE) {
-          const res = await userLogin(values);
-          switch (res.status) {
-            // Success login
-            case "S0000":
-              dispatch(setCurrentUser(res.data.user));
-              Cookies.set("token", res.data.access_token);
-              Cookies.set("refresh_token", res.data.refresh_token);
-              globalMessage({
-                type: "success",
-                text: "Đăng nhập thành công",
-              });
-              setTimeout(() => {
-                window.location.pathname = "/";
-              }, 2000);
-              break;
-
-            // Success login
-            case "UR0001":
-              break;
-
-            default:
-              break;
-          }
-        } else {
-          if (values.username === "mono.staff" && values.password === "123456789") {
-            localStorage.loggedin = true
-            dispatch(
-              setCurrentUser({
-                uid: 10101,
-                username: "MONOCHROME_STAFFS",
-                roles: "staff",
-                phone: "0353119808",
-              })
-            );
+        dispatch(setLoading(true));
+        const res = await userLogin(Object.assign(values, { rememberMe: true }));
+        switch (res.status) {
+          // Success login
+          case 200:
+            dispatch(setCurrentUser(res.data));
+            Cookies.set("token", res.data.token);
+            localStorage.roles = res.data.roles[0];
             globalMessage({
               type: "success",
               text: "Đăng nhập thành công",
             });
+
+            dispatch(setLoading(false));
             setTimeout(() => {
               window.location.pathname = "/";
             }, 2000);
-          } else {
+            break;
+
+          // Success login
+          case 401:
+            dispatch(setLoading(false));
             globalMessage({
               type: "error",
               text: "Thông tin đăng nhập không chính xác",
             });
-          }
+            break;
+
+          default:
+            break;
+        }
+      },
+    },
+    create_client: {
+      actions: async (values) => {
+        dispatch(setLoading(true));
+        const res = await createClient(values);
+        switch (res.status) {
+          // Success login
+          case 201:
+            globalMessage({
+              type: "success",
+              text: "Đăng nhập thành công",
+            });
+            props.onFinish(res.data)
+            dispatch(setLoading(false));
+            break;
+
+          default:
+            dispatch(setLoading(false));
+            globalMessage({
+              type: "error",
+              text: "Có lỗi xảy ra!",
+            });
+            break;
         }
       },
     },
   };
 
   return (
-    <Form {...layout} form={form} name="register" onFinish={onFinish} initialValues={{}} scrollToFirstError style={{ width: "100%" }}>
+    <Form
+      layout={layout || "vertical"}
+      size={size}
+      {...layout}
+      form={form}
+      name="register"
+      onFinish={onFinish}
+      scrollToFirstError
+      style={{ width: "100%" }}
+      labelCol={labelCol}
+      wrapperCol={wrapperCol}
+    >
       {props.contents}
       {props.submit_text && (
-        <Form.Item>
+        <Form.Item className="flex__center__center" wrapperCol={{ ...wrapperCol, ...offsetButton }}>
           <Button style={{ height: 50 }} type="primary" htmlType="submit" size={large ? "large" : ""}>
             {props.submit_text}
           </Button>

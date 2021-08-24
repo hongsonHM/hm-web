@@ -13,13 +13,6 @@ const authSlice = createSlice({
         ...state,
         userProfile: { ...action.payload },
       };
-      // if (mockUserByRoles.includes(action.payload.email))
-      //   state.user = {
-      //     uid: 100111,
-      //     username: action.payload.email.split("@")[0].toUpperCase(),
-      //     token: "",
-      //     roles: action.payload.email.split("@")[0],
-      //   };
     },
   },
 });

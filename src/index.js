@@ -4,7 +4,6 @@ import ReactDOM from "react-dom";
 import * as serviceWorker from "./serviceWorker";
 import "./index.less";
 import Layouts from "./layouts";
-import { createStore } from 'redux'
 import { store } from './stores'
 
 ReactDOM.render(

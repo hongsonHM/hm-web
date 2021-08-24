@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Menu } from "antd";
+import { Button, Menu } from "antd";
 import { StyledMenuItem } from "./styled";
 import { roles } from "../../configs/roles";
 import { Link, useParams } from "react-router-dom";
@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 import { checkObjEmpty } from "../../utils";
 
 const { SubMenu } = Menu;
-const MOCK_MODE = true
 
 const MenuByRoles = (props) => {
   const currentUser = useSelector(getUser) || {};
@@ -16,7 +15,7 @@ const MenuByRoles = (props) => {
 
   const renderMenuItem = () => {
     let result;
-    let items = roles[currentUser.roles || "staff"];
+    let items = roles[currentUser.authorities && currentUser.authorities[0]];
     result = items.map((item) => {
       if (item.submenu)
         return (
@@ -33,9 +32,11 @@ const MenuByRoles = (props) => {
       else
         return (
           <StyledMenuItem key={item.key}>
-            <Link to={`${item.path}`}>
-              <span>{item.name}</span>
-            </Link>
+            <Button size="large" block>
+              <Link to={`${item.path}`}>
+                <span>{item.name}</span>
+              </Link>
+            </Button>
           </StyledMenuItem>
         );
     });
@@ -43,14 +44,8 @@ const MenuByRoles = (props) => {
   };
 
   return (
-    <Menu
-      className="main__menu flex__center__center flex__column"
-      theme="dark"
-      selectedKeys={param || "dashboard"}
-      mode="inline"
-    >
-      {!MOCK_MODE && checkObjEmpty(currentUser) && renderMenuItem()}
-      {MOCK_MODE && renderMenuItem()}
+    <Menu className="main__menu flex__center__center flex__column" theme="dark" selectedKeys={param || "dashboard"} mode="inline">
+      {checkObjEmpty(currentUser) && renderMenuItem()}
     </Menu>
   );
 };

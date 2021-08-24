@@ -1,13 +1,13 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
-
-const MOCK_MODE = true;
+import { globalMessage } from "../components/GlobalMessage";
+const MOCK_MODE = false;
+const retryCodes = [408, 500, 502, 503, 504, 522, 524];
+const successCodes = [200, 201, 202];
 
 let access_token = Cookies.get("token");
-if (!access_token && window.location.pathname !== "/dang-nhap" && !MOCK_MODE) window.location.pathname = "/dang-nhap";
-
-MOCK_MODE && !localStorage.loggedin && window.location.pathname !== "/dang-nhap" && (window.location.pathname = "/dang-nhap");
+// if (!access_token && window.location.pathname !== "/dang-nhap") window.location.pathname = "/dang-nhap";
 
 axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
 
@@ -37,30 +37,37 @@ const refreshToken = () => {
  * Retry call API limit 3 times
  */
 async function retryHandleApis(url, method, data, retries = 3, backoff = 100) {
-  const retryCodes = [408, 500, 502, 503, 504, 522, 524];
-  const successCodes = [200, 201, 202];
   return axios({
     method: method,
     url: url,
     data: data,
     headers: {
-      Authorization: "Bearer " + (await refreshToken()),
+      Authorization: "Bearer " + access_token,
+      'Access-Control-Allow-Methods': '*'
     },
   })
     .then(function (res) {
-      if (res.data.status === "UR0015") refreshToken();
       if (successCodes.includes(res.status)) {
-        return res.data;
+        return res;
       }
       if (retries > 0 && retryCodes.includes(res.status)) {
         setTimeout(() => {
+          console.log(retries);
           return retryHandleApis(url, method, data, retries - 1, backoff * 2); /* 3 */
         }, backoff);
       } else {
         throw new Error(res);
       }
     })
-    .catch(console.error);
+    .catch((error) => {
+      if (error.response && error.response.status === 401) {
+        window.location.pathname !== "/dang-nhap" && (window.location.pathname = "/dang-nhap");
+        //place your reentry code
+        return error.response;
+      } else {
+        return error.response
+      }
+    });
 }
 
 export default retryHandleApis;

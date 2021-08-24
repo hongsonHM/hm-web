@@ -18,7 +18,7 @@ export const StyledSignin = styled(Row)`
     flex-direction: column;
     padding: 50px 10px;
     h1.ant-typography {
-      color: #3A6351; // #3A6351
+      color: #3eb8f8; // #3eb8f8
     }
     > span.ant-typography {
       margin-bottom: 15px;

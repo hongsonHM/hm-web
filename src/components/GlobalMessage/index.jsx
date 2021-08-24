@@ -6,6 +6,7 @@ message.config({
 });
 
 export const globalMessage = (msg) => {
+  message.destroy()
   switch (msg.type) {
     case 'success':
       return message.success(msg.text);

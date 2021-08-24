@@ -6,8 +6,9 @@ function Loading(props) {
 
   const style = {
     fontSize: "36px",
-    color: "#00c368",
+    color: "#3eb8f8",
   };
+  
   return (
     <StyledLoading>
       <LoadingOutlined style={style} />

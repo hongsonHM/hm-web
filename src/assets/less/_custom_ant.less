@@ -1,7 +1,3 @@
-.ant-popover-inner-content {
-  padding: 5px 6px 2px 0px;
-}
-
 .ant-message {
   transition: all 1s ease;
 }
@@ -11,10 +7,10 @@
 }
 
 .ant-message-notice-content {
-  border-radius: 0;
-  width: 100vw;
+  border-radius: 5px;
+  width: calc(100vw - 20px);
   padding: 0;
-  height: 40px;
+  height: 45px;
 
   .ant-message-custom-content {
     height: 100%;
@@ -23,6 +19,7 @@
     align-items: center;
     justify-content: center;
     color: #fff;
+    border-radius: 5px;
     .anticon {
       display: none;
     }
@@ -46,9 +43,10 @@
   text-transform: uppercase;
   font-size: 14px;
   color: #2d2d2d;
-  &::before {
-    display: none !important;
-  }
+}
+
+.ant-input[disabled] {
+  color: rgba(0, 0, 0, 0.7);
 }
 
 .ant-menu-dark .ant-menu-item:hover,
@@ -64,12 +62,12 @@
   width: 100%;
 }
 
-.ant-menu-submenu-title:hover {
-  background-color: #00c368 !important;
-}
+// .ant-menu-submenu-title:hover {
+//   background-color: #00c368 !important;
+// }
 
 .ant-layout {
-  background-color: #3A635150;
+  background-color: #3eb8f830;
 }
 
 .ant-input {
@@ -81,4 +79,86 @@
     border: 1px solid #d9d9d9;
     pointer-events: all;
   }
+}
+.ant-avatar {
+  cursor: pointer;
+}
+.notification_item {
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  padding: 10px 25px 10px 15px;
+  transition: all 0.4s ease;
+  cursor: pointer;
+  position: relative;
+  opacity: 0.8;
+  .notification_icon {
+    font-size: 30px;
+    margin: 0px 10px;
+  }
+  .notification_content {
+    width: 100%;
+  }
+
+  &.SUCCESS {
+    background-color: #209f8520;
+    border: 1px solid #209f8550;
+    box-shadow: 0px 2px 4px #209f8550;
+    border-left: 8px solid #209f85;
+  }
+  &.error {
+    background-color: #ee2a2a20;
+    border: 1px solid #ee2a2a50;
+    box-shadow: 0px 2px 4px #ee2a2a50;
+    border-left: 8px solid #ee2a2a;
+  }
+  &.warning {
+    background-color: #ffbb0020;
+    border: 1px solid #ffbb0050;
+    box-shadow: 0px 2px 4px #ffbb0050;
+    border-left: 8px solid #ffbb00;
+  }
+  &.INFOMATION, &.PROCESS {
+    background-color: #3eb8f820;
+    border: 1px solid #3eb8f850;
+    box-shadow: 0px 2px 4px #3eb8f850;
+    border-left: 8px solid #3eb8f8;
+  }
+  .notification_name {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  small {
+    text-align: right;
+    width: 100%;
+    display: block;
+    font-style: italic;
+    padding-right: 10px;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+  &.unread {
+    opacity: 1;
+  }
+  &.unread:after {
+    content: "";
+    position: absolute;
+    height: 10px;
+    width: 10px;
+    border-radius: 10px;
+    background-color: #3eb8f8;
+    right: 5px;
+    top: 5px;
+  }
+}
+
+.ant-table-column-sorter, .ant-table-filter-trigger {
+  color: #fff;
+}
+
+.ant-descriptions-bordered .ant-descriptions-item-label span {
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }

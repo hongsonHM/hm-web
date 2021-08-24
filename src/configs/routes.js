@@ -32,6 +32,11 @@ const routes = [
     path: "/:param",
     exact: true,
     component: () => <App />
+  },
+  {
+    path: "/contract/:id",
+    exact: true,
+    component: () => <App />
   }
 ]
 

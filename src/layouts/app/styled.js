@@ -4,8 +4,8 @@ import { Layout } from "antd";
 const { Header, Sider } = Layout;
 
 export const StyledSider = styled(Sider)`
-  background: #3a6351;
-
+  background: #3eb8f8;
+/* 
   .ant-menu-inline-collapsed > .ant-menu-item .anticon {
     font-size: 20px;
   }
@@ -32,19 +32,26 @@ export const StyledSider = styled(Sider)`
     line-height: 50px;
   }
 
-  .ant-menu-submenu-open, .ant-menu-submenu-open .ant-menu-inline.ant-menu-sub, .ant-menu-submenu-open li  {
+  .ant-menu-submenu-open,
+  .ant-menu-submenu-open .ant-menu-inline.ant-menu-sub,
+  .ant-menu-submenu-open li {
     background-color: rgba(0, 195, 104, 0.2);
-  }
+  } */
 
   .logo {
     height: 64px;
     font-size: 30px;
     color: #fff;
+    margin-bottom: 5px;
+    img {
+      height: 50px;
+      width: auto;
+    }
   }
 `;
 
 export const StyledLayout = styled(Layout)`
-  background: #3a635120;
+  background: #3eb8f820;
   position: relative;
   .ant-layout-content {
     background: #f4f7f2;
@@ -52,12 +59,12 @@ export const StyledLayout = styled(Layout)`
     max-height: 100vh;
     overflow-y: scroll;
     ::-webkit-scrollbar {
-      width: 10px;
+      width: 7px;
       height: 100%;
       background: #f4f7f2;
     }
     ::-webkit-scrollbar-thumb {
-      background: #3a6351;
+      background: #3eb8f8;
       border-radius: 2px;
     }
 

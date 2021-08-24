@@ -46,7 +46,7 @@ const Signin = (props) => {
                   },
                   ({ getFieldValue }) => ({
                     validator(rule, value) {
-                      if (!value || value.length >= 8) {
+                      if (!value || value.length >= 3) {
                         return Promise.resolve();
                       }
 

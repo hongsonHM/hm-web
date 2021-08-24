@@ -8,7 +8,7 @@ export const StyledTitleButton = styled(Title)`
   color: ${props => props.color + '!important'};
   height: 40px;
   margin: 10px auto;
-  padding-left: 15px;
+  padding-left: 8px;
   border-left: 5px solid ${props => props.color};
   /* background-color: ${props => props.color+'10'} */
 `

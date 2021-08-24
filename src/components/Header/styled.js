@@ -12,4 +12,12 @@ export const StyledHeader = styled(Header)`
   z-index: 9;
   padding-left: 20px;
   border-bottom: 1px solid rgba(82, 146, 32, 0.23);
+  .username {
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  .ant-badge {
+    cursor: pointer;
+  }
 `;
