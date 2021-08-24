@@ -1,0 +1,84 @@
+.ant-popover-inner-content {
+  padding: 5px 6px 2px 0px;
+}
+
+.ant-message {
+  transition: all 1s ease;
+}
+
+.ant-message-notice {
+  padding: 8px 0px !important;
+}
+
+.ant-message-notice-content {
+  border-radius: 0;
+  width: 100vw;
+  padding: 0;
+  height: 40px;
+
+  .ant-message-custom-content {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    .anticon {
+      display: none;
+    }
+  }
+
+  .ant-message-error {
+    background: #ee2a2a;
+  }
+  .ant-message-success {
+    background: #209f85;
+  }
+  .ant-message-warning {
+    background: #ffbb00;
+  }
+  .ant-message-info {
+    background: #3eb8f8;
+  }
+}
+
+.ant-form-item-label label {
+  text-transform: uppercase;
+  font-size: 14px;
+  color: #2d2d2d;
+  &::before {
+    display: none !important;
+  }
+}
+
+.ant-menu-dark .ant-menu-item:hover,
+.ant-menu-dark .ant-menu-item-active,
+.ant-menu-dark .ant-menu-submenu-active,
+.ant-menu-dark .ant-menu-submenu-open,
+.ant-menu-dark .ant-menu-submenu-selected,
+.ant-menu-dark .ant-menu-submenu-title:hover,
+.ant-menu-vertical .ant-menu-submenu,
+.ant-menu-vertical-left .ant-menu-submenu,
+.ant-menu-vertical-right .ant-menu-submenu,
+.ant-menu-inline .ant-menu-submenu {
+  width: 100%;
+}
+
+.ant-menu-submenu-title:hover {
+  background-color: #00c368 !important;
+}
+
+.ant-layout {
+  background-color: #3A635150;
+}
+
+.ant-input {
+  &.input_disabled {
+    border: none;
+    pointer-events: none;
+  }
+  &.input_editing {
+    border: 1px solid #d9d9d9;
+    pointer-events: all;
+  }
+}
