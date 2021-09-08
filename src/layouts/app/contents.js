@@ -11,6 +11,8 @@ import AddNewUser from '../../pages/AddNewUser'
 import RemoveUser from '../../pages/RemoveUser'
 import ContractDetails from '../../pages/ContractDetails'
 import EditContract from '../../pages/EditContract'
+import Schedules from '../../pages/Schedules'
+import SchedulesRecord from '../../pages/SchedulesRecord'
 
 const contents = [
   {
@@ -69,6 +71,14 @@ const contents = [
     param: "division_info",
     component: () => <Dashboard />
   },
+  {
+    param: "schedules",
+    component: () => <Schedules />
+  },
+  {
+    param: "schedules_record",
+    component: () => <SchedulesRecord />
+  }
 ]
 
 export default contents

@@ -1,7 +1,6 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
-import { globalMessage } from "../components/GlobalMessage";
 const MOCK_MODE = false;
 const retryCodes = [408, 500, 502, 503, 504, 522, 524];
 const successCodes = [200, 201, 202];
@@ -43,8 +42,9 @@ async function retryHandleApis(url, method, data, retries = 3, backoff = 100) {
     data: data,
     headers: {
       Authorization: "Bearer " + access_token,
-      'Access-Control-Allow-Methods': '*'
+      'Access-Control-Allow-Methods': '*',
     },
+    mode: 'cors'
   })
     .then(function (res) {
       if (successCodes.includes(res.status)) {

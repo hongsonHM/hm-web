@@ -26,7 +26,6 @@ const ContractForm = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [customValues, setCustomValues] = useState({
     status: "PENDING",
-    orderNumber: 1010101,
     ownerBy: {
       id: 1,
     },
@@ -40,14 +39,14 @@ const ContractForm = (props) => {
     setCurrent(current - 1);
   };
 
-  const onFinish = async (values) => {
-    console.log(customValues);
-    console.log(values);
-    console.log(values, customValues);
+  const onFinish = async (formData) => {
+    const keyToDelete = ["address", "customerCity", "customerName", "phoneNumber", "type"];
+    keyToDelete.forEach((key) => delete formData[key]);
+    console.log(formData);
     const res = await props.actions(
       cid,
-      // Object.assign(values, { durationMonth: caculatorMonths, client: selectedCustomer, status: status, approvedBy: approveBy, ownerBy: { id: 1 } })
-      Object.assign(values, customValues)
+      // Object.assign(formData, { durationMonth: caculatorMonths, client: selectedCustomer, status: status, approvedBy: approveBy, ownerBy: { id: 1 } })
+      Object.assign(formData, customValues)
     );
     switch (res.status) {
       case 200:
@@ -141,9 +140,9 @@ const ContractForm = (props) => {
     if (props.client) setClient(props.client);
   }, [props]);
 
-  useEffect(() => {
-    console.log(customValues);
-  }, [customValues]);
+  // useEffect(() => {
+  //   // console.log(customValues);
+  // }, [customValues]);
 
   const steps = [
     {
@@ -226,7 +225,7 @@ const ContractForm = (props) => {
             <CheckboxGroup
               onChange={(checkedValues) => {
                 setCustomValues(Object.assign(customValues, { approveBy: serviceManager.filter((manager) => checkedValues.includes(manager.id)) }));
-                console.log(customValues);
+                // console.log(customValues);
               }}
             >
               <Row gutter={[8, 16]}>

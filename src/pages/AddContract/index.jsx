@@ -20,7 +20,7 @@ const initialContract = {
   contractValue: null,
   humanResources: null,
   humanResourcesWeekend: null,
-  status: "PENDING",
+  status: "UNREQUEST",
   subjectCount: null,
   valuePerPerson: 0,
   // year: null,

@@ -5,11 +5,11 @@ export const roles = {
       key: "dashboard",
       path: "/dashboard",
     },
-    // {
-    //   name: "Phê duyệt hợp đồng",
-    //   key: "approve_contract",
-    //   path: "/approve_contract",
-    // },
+    {
+      name: "Kế hoạch",
+      key: "schedules_record",
+      path: "/schedules_record",
+    },
     // {
     //   name: "Thêm người dùng",
     //   key: "add_user",
@@ -105,6 +105,11 @@ export const roles = {
       name: "Yêu cầu phê duyệt",
       key: "request_admin",
       path: "/insider_transaction/request_admin",
+    },
+    {
+      name: "Lên kế hoạch",
+      key: "schedules",
+      path: "/schedules",
     },
     // {
     //   name: "Giao dịch nội bộ",

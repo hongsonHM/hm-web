@@ -7,6 +7,9 @@ export const getAllContract = (options) => {
 export const getContractById = (cid) => {
   return retryHandleApis(`/svc-contracts/${cid}`, 'GET')
 }
+export const getContractByStatus = (status) => {
+  return retryHandleApis(`/svc-contracts/?status=${status}`, 'GET')
+}
 
 export const updateContractById = (cid, data) => {
   return retryHandleApis(`/svc-contracts/${cid}`, 'PUT', data)

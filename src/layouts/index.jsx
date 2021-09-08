@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Layout } from "antd";
+import { Layout, message } from "antd";
 import { createBrowserHistory } from "history";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,6 +10,11 @@ import { getLoading, setLoading } from "../stores/commonSlice";
 import { getUserProfile } from "../apis/user";
 import Loading from "../components/Loading";
 import Cookies from "js-cookie";
+
+message.config({
+  maxCount: 3,
+  top: 0
+});
 
 const customHistory = createBrowserHistory();
 

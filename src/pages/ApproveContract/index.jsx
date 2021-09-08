@@ -29,8 +29,9 @@ const ApproveContract = (props) => {
   const columns = [
     {
       title: "Tên khách hàng",
-      dataIndex: "customer_name",
-      key: "customer_name",
+      dataIndex: "client",
+      key: "client",
+      render: (client) => (client ? client.customerName.toUpperCase() : "CHƯA CÓ DỮ LIỆU"),
     },
     {
       title: "Giá trị hợp đồng",

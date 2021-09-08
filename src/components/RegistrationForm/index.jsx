@@ -1,12 +1,11 @@
 import React from "react";
-import { Form, Button } from "antd";
+import { Form, Button, message } from "antd";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../../stores/authSlice";
 import { setLoading } from "../../stores/commonSlice";
 import { userLogin } from "../../apis/auth";
 import { createClient } from "../../apis/contract";
 import Cookies from "js-cookie";
-import { globalMessage } from "../GlobalMessage";
 
 const RegistrationForm = (props) => {
   const dispatch = useDispatch();
@@ -28,11 +27,7 @@ const RegistrationForm = (props) => {
             dispatch(setCurrentUser(res.data));
             Cookies.set("token", res.data.token);
             localStorage.roles = res.data.roles[0];
-            globalMessage({
-              type: "success",
-              text: "Đăng nhập thành công",
-            });
-
+            message.success("Đăng nhập thành công!");
             dispatch(setLoading(false));
             setTimeout(() => {
               window.location.pathname = "/";
@@ -42,10 +37,7 @@ const RegistrationForm = (props) => {
           // Success login
           case 401:
             dispatch(setLoading(false));
-            globalMessage({
-              type: "error",
-              text: "Thông tin đăng nhập không chính xác",
-            });
+            message.error("Thông tin đăng nhập không chính xác!");
             break;
 
           default:
@@ -60,20 +52,14 @@ const RegistrationForm = (props) => {
         switch (res.status) {
           // Success login
           case 201:
-            globalMessage({
-              type: "success",
-              text: "Đăng nhập thành công",
-            });
-            props.onFinish(res.data)
+            message.success("Đăng nhập thành công");
+            props.onFinish(res.data);
             dispatch(setLoading(false));
             break;
 
           default:
             dispatch(setLoading(false));
-            globalMessage({
-              type: "error",
-              text: "Có lỗi xảy ra!",
-            });
+            message.error("Có lỗi xảy ra, thử lại sau ít phút!");
             break;
         }
       },
