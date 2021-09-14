@@ -24,4 +24,34 @@ export const StyledContractForm = styled.div`
       border-radius: 3px;
     }
   }
+
+  .ant-collapse-borderless {
+    background-color: transparent;
+  }
+  .ant-collapse-item {
+    border-bottom: none;
+    margin-bottom: 15px;
+    background-color: #3eb8f830;
+    border: 1px solid transparent;
+    transition: all 0.35s ease;
+    &.ant-collapse-item-active, &:hover {
+      border: 1px solid #3eb8f850;
+      background-color: #3eb8f850;
+    }
+  }
+
+  .ant-collapse > .ant-collapse-item > .ant-collapse-header {
+    font-weight: 600;
+  }
+  .contract__objects {
+    .ant-input[disabled] {
+      border: none;
+      background: transparent;
+      padding-left: 0;
+    }
+  }
+
+  .ant-checkbox-group {
+    width: 100%;
+  }
 `;

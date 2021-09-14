@@ -10,6 +10,7 @@ import SwitchStatus from "./Components/SwitchStatus";
 import moment from "moment";
 import CreateScheduleForm from "./Components/CreateScheduleForm";
 import SchedulesUnit from "./Components/SchedulesUnit";
+import { getAllSchedules } from "../../apis/schedules";
 
 const { Option } = Select;
 const Schedules = (props) => {
@@ -25,6 +26,13 @@ const Schedules = (props) => {
     setContracts(response.data);
   };
 
+  // get all schedules of a contract
+  const fetchSchedules = async () => {
+    const response = await getAllSchedules();
+    console.log(response);
+    setSchedules(response.data);
+  };
+
   useEffect(() => {
     if (!contracts) {
       fetchContracts();
@@ -33,7 +41,7 @@ const Schedules = (props) => {
 
   useEffect(() => {
     if (selectedContract) {
-      setSchedules(mockSchedules);
+      fetchSchedules();
     }
   }, [selectedContract]);
 
@@ -79,17 +87,19 @@ const Schedules = (props) => {
     },
   ];
 
+  const ButtonCreateSchedule = () => (
+    <Button danger type="primary" disabled={selectedContract ? false : true} onClick={() => setModalVisible(true)}>
+      + Tạo mới kế hoạch
+    </Button>
+  );
+
   return (
     <GlobalContent key="create_plan" className="site-drawer-render-in-current-wrapper">
       <GlobalTitle
         title="Quản lý kế hoạch"
         level={3}
         color="#3eb8f8"
-        extra={
-          <Button danger type="primary" disabled={selectedContract ? false : true} onClick={() => setModalVisible(true)}>
-            + Tạo mới kế hoạch
-          </Button>
-        }
+        extra={<ButtonCreateSchedule />}
       />
 
       {/* Search and select Contract before create plan */}
@@ -139,9 +149,7 @@ const Schedules = (props) => {
               emptyText: (
                 <>
                   <p>Chưa có kế hoạch nào cho hợp đồng này!</p>
-                  <Button type="primary" danger>
-                    + Tạo kế hoạch
-                  </Button>
+                  <ButtonCreateSchedule />
                 </>
               ),
             }}
@@ -157,7 +165,7 @@ const Schedules = (props) => {
 
       {/* Modal add new Schedules */}
       <Modal footer={null} title="Thêm mới kế hoạch" visible={modalVisible} onOk={() => setModalVisible(false)} onCancel={() => setModalVisible(false)}>
-        <CreateScheduleForm setModalVisible={setModalVisible} />
+        <CreateScheduleForm selectedContract={selectedContract} setModalVisible={setModalVisible} />
       </Modal>
 
       {/* Drawer list all Schedules Unit when selected a Schedule */}

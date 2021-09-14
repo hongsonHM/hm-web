@@ -5,6 +5,7 @@ import { setCurrentUser } from "../../stores/authSlice";
 import { setLoading } from "../../stores/commonSlice";
 import { userLogin } from "../../apis/auth";
 import { createClient } from "../../apis/contract";
+import { createSchedule } from "../../apis/schedules";
 import Cookies from "js-cookie";
 
 const RegistrationForm = (props) => {
@@ -64,6 +65,25 @@ const RegistrationForm = (props) => {
         }
       },
     },
+    create_schedule: {
+      actions: async (values) => {
+        dispatch(setLoading(true));
+        const res = await createSchedule(values);
+        console.log(res);
+        switch (res.status) {
+          // Success login
+          case 201:
+            props.onFinish(res.data);
+            dispatch(setLoading(false));
+            break;
+
+          default:
+            dispatch(setLoading(false));
+            message.error("Có lỗi xảy ra, thử lại sau ít phút!");
+            break;
+        }
+      },
+    }
   };
 
   return (

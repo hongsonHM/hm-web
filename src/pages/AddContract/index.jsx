@@ -25,7 +25,6 @@ const initialContract = {
   valuePerPerson: 0,
   // year: null,
   client: {
-    id: 1101,
     customerName: null,
     customerCity: null,
     phoneNumber: null,

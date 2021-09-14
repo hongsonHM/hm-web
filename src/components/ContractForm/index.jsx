@@ -1,11 +1,14 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Input, Button, Form, DatePicker, Upload, Select, Checkbox, message, Steps, Row, Col } from "antd";
-import { UploadOutlined, UserOutlined, SolutionOutlined, SendOutlined, FormatPainterOutlined } from "@ant-design/icons";
+import { Input, Button, Form, DatePicker, Upload, Select, Checkbox, message, Steps, Row, Col, Descriptions } from "antd";
+import { UploadOutlined, UserOutlined, SolutionOutlined, SendOutlined, FormatPainterOutlined, ProfileOutlined } from "@ant-design/icons";
 import { StyledContractForm } from "./styled";
 import Modal from "antd/lib/modal/Modal";
 import AddClientForm from "./AddClientForm";
 import FormContents from "./FormContents";
 import moment from "moment";
+import AddObjectStep from "./AddObjectStep";
+import ConfirmContract from "./ConfirmContract";
+import { GlobalDescriptions } from "../../configs/styled.global";
 
 const CheckboxGroup = Checkbox.Group;
 const { Option } = Select;
@@ -19,11 +22,11 @@ const { Step } = Steps;
 const ContractForm = (props) => {
   const { cid, customers, serviceManager, businessManager } = props;
   const [form] = Form.useForm();
-  const [client, setClient] = useState();
   const [current, setCurrent] = React.useState(0);
   const [checkedList, setCheckedList] = React.useState(defaultCheckedList);
   const [checkedSubjectList, setCheckedSubjectList] = useState(defaultSubjectCheckedList);
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedClient, setSelectedClient] = useState();
   const [customValues, setCustomValues] = useState({
     status: "PENDING",
     ownerBy: {
@@ -40,9 +43,6 @@ const ContractForm = (props) => {
   };
 
   const onFinish = async (formData) => {
-    const keyToDelete = ["address", "customerCity", "customerName", "phoneNumber", "type"];
-    keyToDelete.forEach((key) => delete formData[key]);
-    console.log(formData);
     const res = await props.actions(
       cid,
       // Object.assign(formData, { durationMonth: caculatorMonths, client: selectedCustomer, status: status, approvedBy: approveBy, ownerBy: { id: 1 } })
@@ -137,18 +137,14 @@ const ContractForm = (props) => {
   };
 
   useEffect(() => {
-    if (props.client) setClient(props.client);
-  }, [props]);
-
-  // useEffect(() => {
-  //   // console.log(customValues);
-  // }, [customValues]);
+    console.log(selectedClient);
+  }, [selectedClient]);
 
   const steps = [
     {
       title: "Thông tin khách hàng",
       icon: <UserOutlined />,
-      content: client && (
+      content: (
         <Fragment>
           <Form.Item label={"Chọn khách hàng"} name={"customerName"} key={"customerName"}>
             {/* <Input onChange={(e) => updateClient("customerName", e.target.value)} /> */}
@@ -157,8 +153,9 @@ const ContractForm = (props) => {
               placeholder="Chọn khách hàng"
               optionFilterProp="children"
               onChange={(e) => {
-                const newObj = Object.assign(customValues, { client: customers.filter((c) => c.id === e)[0] });
-                setCustomValues({ ...newObj });
+                const selected = customers.filter((c) => c.id === e)[0];
+                setSelectedClient({ ...selected });
+                setCustomValues({ ...Object.assign(customValues, { client: selected }) });
               }}
               filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
@@ -169,21 +166,14 @@ const ContractForm = (props) => {
               ))}
             </Select>
           </Form.Item>
-          {customValues.client && (
-            <Fragment>
-              <Form.Item initialValue={customValues.client.customerCity} label={"Tỉnh/TP"} name={"customerCity"} key={"customerCity"}>
-                <Input disabled />
-              </Form.Item>
-              <Form.Item initialValue={customValues.client.address} label={"Địa chỉ"} name={"address"} key={"address"}>
-                <Input disabled />
-              </Form.Item>
-              <Form.Item initialValue={customValues.client.phoneNumber} label={"Số điện thoại"} name={"phoneNumber"} key={"phoneNumber"}>
-                <Input disabled />
-              </Form.Item>
-              <Form.Item initialValue={customValues.client.type} label={"Mô hình"} name={"type"} key={"type"}>
-                <Input disabled />
-              </Form.Item>
-            </Fragment>
+          {selectedClient && (
+            <GlobalDescriptions style={{ width: "80%", margin: '0 auto 20px' }} labelStyle={{ width: 300 }} bordered column={1} title={"Thông tin khách hàng"}>
+              <Descriptions.Item label="Tên khách hàng">{selectedClient.customerName || "Chưa có thông tin"}</Descriptions.Item>
+              <Descriptions.Item label="Tỉnh/Tp">{selectedClient.customerCity || "Chưa có thông tin"}</Descriptions.Item>
+              <Descriptions.Item label="Địa chỉ">{selectedClient.address || "Chưa có thông tin"}</Descriptions.Item>
+              <Descriptions.Item label="Số điện thoại">{selectedClient.phoneNumber || "Chưa có thông tin"}</Descriptions.Item>
+              <Descriptions.Item label="Mô hình">{selectedClient.type || "Chưa có thông tin"}</Descriptions.Item>
+            </GlobalDescriptions>
           )}
           <div className="flex__center__center">
             <Button type="primary" onClick={() => setModalVisible(true)}>
@@ -202,19 +192,12 @@ const ContractForm = (props) => {
     {
       title: "Thêm vật tư/đối tượng",
       icon: <FormatPainterOutlined />,
-      content: (
-        <Fragment>
-          <Form.Item label="Chọn danh sách vật tư" name="list_subject" valuePropName="checked">
-            <CheckboxGroup
-              options={subjectOptions}
-              value={checkedSubjectList}
-              onChange={(list) => {
-                setCheckedSubjectList(list);
-              }}
-            />
-          </Form.Item>
-        </Fragment>
-      ),
+      content: <AddObjectStep />,
+    },
+    {
+      title: "Xác nhận thông tin",
+      icon: <ProfileOutlined />,
+      content: <ConfirmContract selectedClient={selectedClient} contract={props.contract} setCurrent={setCurrent} />,
     },
     {
       title: "Chuyển tiếp thông tin",
@@ -224,14 +207,14 @@ const ContractForm = (props) => {
           <Form.Item label="Quản lý cao cấp phê duyệt" name="request_admin" valuePropName="checked">
             <CheckboxGroup
               onChange={(checkedValues) => {
-                setCustomValues(Object.assign(customValues, { approveBy: serviceManager.filter((manager) => checkedValues.includes(manager.id)) }));
+                setCustomValues(Object.assign(customValues, { approveBy: businessManager.filter((manager) => checkedValues.includes(manager.id)) }));
                 // console.log(customValues);
               }}
             >
               <Row gutter={[8, 16]}>
-                {serviceManager.map((c, i) => (
+                {businessManager.map((c, i) => (
                   <Col span={8} key={c.id}>
-                    <Checkbox value={c.id}>{c.deviceId}</Checkbox>
+                    <Checkbox value={c.id}>{c.internalUser.firstName + " " + c.internalUser.lastName}</Checkbox>
                   </Col>
                 ))}
               </Row>
@@ -246,7 +229,7 @@ const ContractForm = (props) => {
               <Row gutter={[8, 16]}>
                 {serviceManager.map((c, i) => (
                   <Col span={8} key={c.id}>
-                    <Checkbox value={c.id}>{c.deviceId}</Checkbox>
+                    <Checkbox value={c.id}>{c.internalUser.firstName + " " + c.internalUser.lastName}</Checkbox>
                   </Col>
                 ))}
               </Row>
@@ -283,7 +266,6 @@ const ContractForm = (props) => {
         size="large"
         onFinish={onFinish}
         onFinishFailed={() => setCurrent(1)}
-        // onValuesChange={onFormLayoutChange} // not working :D ????
       >
         <FormContents steps={steps} current={current} next={next} prev={prev} />
       </Form>
