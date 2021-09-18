@@ -20,7 +20,7 @@ const defaultSubjectCheckedList = [];
 const { Step } = Steps;
 
 const ContractForm = (props) => {
-  const { cid, customers, serviceManager, businessManager } = props;
+  const { cid, customers, serviceManager, businessManager, client, contract } = props;
   const [form] = Form.useForm();
   const [current, setCurrent] = React.useState(0);
   const [checkedList, setCheckedList] = React.useState(defaultCheckedList);
@@ -43,10 +43,16 @@ const ContractForm = (props) => {
   };
 
   const onFinish = async (formData) => {
+    let cloneObj = Object.assign(formData, customValues)
+    delete cloneObj['svcSpendTaskForAreaDTOs']; 
+    const newData = {
+      svcContractDTO: cloneObj,
+      svcSpendTaskForAreaDTOs: customValues.svcSpendTaskForAreaDTOs
+    }
     const res = await props.actions(
       cid,
       // Object.assign(formData, { durationMonth: caculatorMonths, client: selectedCustomer, status: status, approvedBy: approveBy, ownerBy: { id: 1 } })
-      Object.assign(formData, customValues)
+      newData
     );
     switch (res.status) {
       case 200:
@@ -137,8 +143,8 @@ const ContractForm = (props) => {
   };
 
   useEffect(() => {
-    console.log(selectedClient);
-  }, [selectedClient]);
+    if (client) setSelectedClient(client);
+  }, [client]);
 
   const steps = [
     {
@@ -167,7 +173,7 @@ const ContractForm = (props) => {
             </Select>
           </Form.Item>
           {selectedClient && (
-            <GlobalDescriptions style={{ width: "80%", margin: '0 auto 20px' }} labelStyle={{ width: 300 }} bordered column={1} title={"Thông tin khách hàng"}>
+            <GlobalDescriptions style={{ width: "80%", margin: "0 auto 20px" }} labelStyle={{ width: 300 }} bordered column={1} title={"Thông tin khách hàng"}>
               <Descriptions.Item label="Tên khách hàng">{selectedClient.customerName || "Chưa có thông tin"}</Descriptions.Item>
               <Descriptions.Item label="Tỉnh/Tp">{selectedClient.customerCity || "Chưa có thông tin"}</Descriptions.Item>
               <Descriptions.Item label="Địa chỉ">{selectedClient.address || "Chưa có thông tin"}</Descriptions.Item>
@@ -190,21 +196,23 @@ const ContractForm = (props) => {
       content: renderFormItemByInitalContract(),
     },
     {
-      title: "Thêm vật tư/đối tượng",
+      title: "Thêm tiểu bộ phận",
       icon: <FormatPainterOutlined />,
-      content: <AddObjectStep />,
+      content: <AddObjectStep customValues={customValues} setCustomValues={setCustomValues} />,
     },
     {
       title: "Xác nhận thông tin",
       icon: <ProfileOutlined />,
-      content: <ConfirmContract selectedClient={selectedClient} contract={props.contract} setCurrent={setCurrent} />,
+      content: (
+        <ConfirmContract selectedClient={selectedClient} contract={props.contract} setCurrent={setCurrent} customValues={customValues} />
+      ),
     },
     {
       title: "Chuyển tiếp thông tin",
       icon: <SendOutlined />,
       content: (
         <Fragment>
-          <Form.Item label="Quản lý cao cấp phê duyệt" name="request_admin" valuePropName="checked">
+          <Form.Item label="Quản lý cao cấp phê duyệt" name="approveBy" valuePropName="checked">
             <CheckboxGroup
               onChange={(checkedValues) => {
                 setCustomValues(Object.assign(customValues, { approveBy: businessManager.filter((manager) => checkedValues.includes(manager.id)) }));
@@ -220,10 +228,11 @@ const ContractForm = (props) => {
               </Row>
             </CheckboxGroup>
           </Form.Item>
-          <Form.Item label="Quản lý dịch vụ" name="request_admin" valuePropName="checked">
+          <Form.Item label="Quản lý dịch vụ" name="managerBy" valuePropName="checked">
             <CheckboxGroup
               onChange={(checkedValues) => {
                 setCheckedSubjectList(checkedValues);
+                setCustomValues(Object.assign(customValues, { managerBy: serviceManager.filter((manager) => checkedValues.includes(manager.id)) }));
               }}
             >
               <Row gutter={[8, 16]}>
@@ -235,12 +244,12 @@ const ContractForm = (props) => {
               </Row>
             </CheckboxGroup>
           </Form.Item>
-          <Form.Item label="Bộ phận tiếp nhận" name="request_admin" valuePropName="checked">
+          <Form.Item label="Bộ phận tiếp nhận" name="notificationUnits" valuePropName="checked">
             <CheckboxGroup
               options={plainOptions}
               value={checkedList}
               onChange={(list) => {
-                setCustomValues(Object.assign(customValues, { staff_relation: list }));
+                setCustomValues(Object.assign(customValues, { notificationUnits: ["SUPPLY_STAFF", "HUMANRESOURCE_STAFF"] }));
                 setCheckedList(list);
               }}
             />
@@ -262,12 +271,17 @@ const ContractForm = (props) => {
         wrapperCol={{ span: 17 }}
         layout={"horizontal"}
         form={form}
-        initialValues={{ layout: "horizontal" }}
+        initialValues={{
+          layout: "horizontal",
+          effectiveTimeFrom:
+            props.contract && props.contract["effectiveTimeFrom"].value ? moment(props.contract && props.contract["effectiveTimeFrom"].value) : null,
+          effectiveTimeTo: props.contract && props.contract["effectiveTimeTo"].value ? moment(props.contract && props.contract["effectiveTimeTo"].value) : null,
+        }}
         size="large"
         onFinish={onFinish}
         onFinishFailed={() => setCurrent(1)}
       >
-        <FormContents steps={steps} current={current} next={next} prev={prev} />
+        <FormContents customValues={customValues} setCustomValues={setCustomValues} steps={steps} current={current} next={next} prev={prev} />
       </Form>
 
       <Modal footer={null} title="Thêm mới khách hàng" visible={modalVisible} onOk={() => setModalVisible(false)} onCancel={() => setModalVisible(false)}>

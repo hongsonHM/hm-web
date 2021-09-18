@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { Button } from 'antd'
 
 function FormContents(props) {
-  const { steps, current } = props;
+  const { steps, current, customValues } = props;
   
   return (
     <Fragment>
@@ -16,7 +16,10 @@ function FormContents(props) {
           </Button>
         )}
         {current < steps.length - 1 && (
-          <Button size="large" type="primary" onClick={() => props.next()}>
+          <Button size="large" type="primary" onClick={() => {
+            props.next()
+            props.setCustomValues(Object.assign({}, customValues))
+          }}>
             Tiếp theo
           </Button>
         )}

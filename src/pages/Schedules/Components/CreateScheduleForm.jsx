@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Form, Input, Select, Button } from "antd";
+import { Form, Input, Select, Button, message } from "antd";
 import { getUserByRole } from "../../../apis/auth";
 import { createSchedule } from "../../../apis/schedules";
 
@@ -28,47 +28,34 @@ function CreateScheduleForm(props) {
   }, [humanResourceStaffs]);
 
   const onFinish = async (values) => {
-    // dispatch(setLoading(true));
     const res = await createSchedule({
       active: true,
-      contract: selectedContract,
-      schedulesName: values.schedulesName,
-      serviceManager: serviceManager.filter((e) => e.id === values.serviceManager)[0],
-      defaultSupervisor: humanResourceStaffs.filter((e) => e.id === values.defaultSupervisor)[0],
+      contractId: selectedContract.id,
+      name: values.schedulesName,
+      serviceManagerId: serviceManager.filter((e) => e.id === values.serviceManager)[0].id,
+      defaultSuppervisorId: humanResourceStaffs.filter((e) => e.id === values.defaultSupervisor)[0].id,
     });
-    console.log(res);
     switch (res.status) {
-      // Success login
       case 201:
-        props.onFinish(res.data);
-        // dispatch(setLoading(false));
+        message.success("Tạo kế hoạch thành công!");
+        props.fetchSchedules()
         break;
 
       default:
-        // dispatch(setLoading(false));
-        // message.error("Có lỗi xảy ra, thử lại sau ít phút!");
+        message.error("Có lỗi xảy ra, thử lại sau ít phút!");
         break;
     }
     props.setModalVisible(false);
-    props.setCustomValues(Object.assign(props.customValues, { client: values }));
   };
 
   return (
     <Form
-      // submit_text="TẠO MỚI KẾ  HOẠCH"
-      // type="create_schedule"
-
       layout="vertical"
-      // size="large"
-      // {...layout}
       form={form}
       name="create_schedule"
       onFinish={onFinish}
-      // action={onSubmit}
       scrollToFirstError
       style={{ width: "100%" }}
-      // labelCol={labelCol}
-      // wrapperCol={wrapperCol}
     >
       <Form.Item
         name="schedulesName"

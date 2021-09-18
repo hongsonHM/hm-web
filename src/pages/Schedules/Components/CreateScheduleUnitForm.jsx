@@ -1,73 +1,49 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Input, Form, Select, DatePicker } from "antd";
-import RegistrationForm from "../../../components/RegistrationForm";
-import { getUserByRole } from "../../../apis/auth";
-import { mockLaborer } from '../mock'
+import { message, Form, Select, DatePicker, Button } from "antd";
+import { createPlanUnit } from "../../../apis/schedules";
 
-const { RangePicker } = DatePicker;
+const { TimeRanges } = DatePicker;
 const { Option } = Select;
 
 function CreateScheduleUnitForm(props) {
-  const [serviceManager, setServiceManager] = useState();
+  const [form] = Form.useForm();
 
-  const getServiceManager = async () => {
-    const res = await getUserByRole("SERVICE_MANAGER");
-    setServiceManager(res.data);
+  const onFinish = async (value) => {
+    // dispatch(setLoading(true));
+    const res = await createPlanUnit(Object.assign(value, { svcPlan: props.selectedPlan }));
+    switch (res.status) {
+      case 201:
+        message.success("Tạo nhiệm vụ thành công!");
+        props.fetchPlanUnits();
+        break;
+
+      default:
+        message.error("Có lỗi xảy ra, thử lại sau ít phút!");
+        break;
+    }
+    props.setModalVisible(false);
   };
 
-  useEffect(() => {
-    if (!serviceManager) getServiceManager();
-  }, [serviceManager]);
-
   return (
-    <RegistrationForm
-      submit_text="TẠO MỚI KẾ  HOẠCH"
-      contents={
-        <Fragment>
-          <Form.Item
-            name="start_at"
-            label="Thời gian"
-            rules={[
-              {
-                required: true,
-                message: "",
-              },
-            ]}
-          >
-            <RangePicker showTime={{ format: "HH:mm" }} format="DD/MM/YYYY HH:mm" onChange={() => {}} onOk={() => {}} />
-          </Form.Item>
-          <Form.Item
-            name="laborer"
-            label="Nhân công"
-            rules={[
-              {
-                required: true,
-                message: "",
-              },
-            ]}
-          >
-            <Select
-              size="large"
-              showSearch
-              placeholder="Chọn một nhân công"
-              optionFilterProp="children"
-              filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-            >
-              {mockLaborer && mockLaborer.map((laborer, i) => (
-                <Option key={i} value={laborer.id}>
-                  {laborer.name + " - " + laborer.phone}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </Fragment>
-      }
-      type="create_schedule_unit"
-      onFinish={(res) => {
-        props.setModalVisible(false);
-        props.setCustomValues(Object.assign(props.customValues, { client: res }));
-      }}
-    />
+    <Form layout="vertical" form={form} name="create_schedule" onFinish={onFinish} scrollToFirstError style={{ width: "100%" }}>
+      <Form.Item
+        name="startAt"
+        label="Thời gian bắt đầu"
+        rules={[
+          {
+            required: true,
+            message: "",
+          },
+        ]}
+      >
+        <DatePicker showTime={{ format: "HH:mm" }} format="DD/MM/YYYY HH:mm" onChange={() => {}} onOk={() => {}} size="large" />
+      </Form.Item>
+      <Form.Item className="flex__center__center">
+        <Button style={{ width: "100%" }} size="large" type="primary" htmlType="submit">
+          Thêm Nhiệm Vụ
+        </Button>
+      </Form.Item>
+    </Form>
   );
 }
 export default CreateScheduleUnitForm;

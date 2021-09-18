@@ -194,10 +194,10 @@ export const buildingObject = [
   { id: 117, name: "Tiểu cảnh: ốp gạch men", unit: "m2" },
 ];
 
-export const buildingObjName = () => {
+export const buildingObjName = (obj) => {
   const arr = []
-  for (const property in buildingObject) {
-    arr.push(buildingObject[property].name)
+  for (const property in obj) {
+    arr.push(obj[property].name)
   }
   return arr
 }

@@ -40,3 +40,12 @@ export const flattenNestedObjects = (obj) => {
     }(obj)
   )
 }
+
+export const getArrayObjectName = (obj) => {
+  const arr = []
+  for (const property in obj) {
+    arr.push(obj[property].name)
+  }
+  return arr
+}
+

@@ -29,3 +29,9 @@ export const getAllClients = () => {
 export const createClient = (data) => {
   return retryHandleApis(`/svc-clients`, 'POST', data)
 }
+export const getCoreSupplies = () => {
+  return retryHandleApis(`/core-supplies`, 'GET')
+}
+export const getCoreTasks = () => {
+  return retryHandleApis(`/core-tasks?size=117`, 'GET')
+}

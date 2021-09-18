@@ -10,7 +10,7 @@ import SwitchStatus from "./Components/SwitchStatus";
 import moment from "moment";
 import CreateScheduleForm from "./Components/CreateScheduleForm";
 import SchedulesUnit from "./Components/SchedulesUnit";
-import { getAllSchedules } from "../../apis/schedules";
+import { getAllSchedulesByContractId } from "../../apis/schedules";
 
 const { Option } = Select;
 const Schedules = (props) => {
@@ -19,6 +19,7 @@ const Schedules = (props) => {
   const [schedules, setSchedules] = useState();
   const [modalVisible, setModalVisible] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState();
 
   // Get all contract by status = SUCCESS
   const fetchContracts = async () => {
@@ -28,8 +29,7 @@ const Schedules = (props) => {
 
   // get all schedules of a contract
   const fetchSchedules = async () => {
-    const response = await getAllSchedules();
-    console.log(response);
+    const response = await getAllSchedulesByContractId(selectedContract.id);
     setSchedules(response.data);
   };
 
@@ -48,9 +48,9 @@ const Schedules = (props) => {
   const columns = [
     {
       title: "Tên kế hoạch",
-      dataIndex: "scheduleName",
-      key: "scheduleName",
-      render: (scheduleName) => (scheduleName ? scheduleName.toUpperCase() : "CHƯA CÓ DỮ LIỆU"),
+      dataIndex: "name",
+      key: "name",
+      render: (name) => (name ? name.toUpperCase() : "CHƯA CÓ DỮ LIỆU"),
     },
     {
       title: "Quản lý dịch vụ",
@@ -95,12 +95,7 @@ const Schedules = (props) => {
 
   return (
     <GlobalContent key="create_plan" className="site-drawer-render-in-current-wrapper">
-      <GlobalTitle
-        title="Quản lý kế hoạch"
-        level={3}
-        color="#3eb8f8"
-        extra={<ButtonCreateSchedule />}
-      />
+      <GlobalTitle title="Quản lý kế hoạch" level={3} color="#3eb8f8" extra={<ButtonCreateSchedule />} />
 
       {/* Search and select Contract before create plan */}
       <Select
@@ -130,14 +125,17 @@ const Schedules = (props) => {
             <Descriptions.Item label="Địa chỉ">{selectedContract.client.address}</Descriptions.Item>
             <Descriptions.Item label="Ngày bắt đầu">{moment(selectedContract.effectiveTimeFrom).format("DD/MM/YYYY")}</Descriptions.Item>
             <Descriptions.Item label="Ngày kết thúc">{moment(selectedContract.effectiveTimeTo).format("DD/MM/YYYY")}</Descriptions.Item>
+            <Descriptions.Item label="Số lượng đối tượng">3 Tiểu bộ phận - 9 đối tượng</Descriptions.Item>
+            <Descriptions.Item label="Số lượng công">320 công</Descriptions.Item>
             {/* <Descriptions.Item label="Nội dung">{selectedContract.content}</Descriptions.Item> */}
           </Descriptions>
           <Divider />
-          <Typography.Title level={5}>Danh sách kế hoạch ({mockSchedules.length})</Typography.Title>
+          <Typography.Title level={5}>Danh sách kế hoạch ({schedules && schedules.length})</Typography.Title>
           <StyledTable
             onRow={(record, rowIndex) => {
               return {
                 onClick: (event) => {
+                  setSelectedPlan(record);
                   // setSelectedContract(record);
                   setDrawerVisible(true);
                 }, // click row
@@ -165,7 +163,7 @@ const Schedules = (props) => {
 
       {/* Modal add new Schedules */}
       <Modal footer={null} title="Thêm mới kế hoạch" visible={modalVisible} onOk={() => setModalVisible(false)} onCancel={() => setModalVisible(false)}>
-        <CreateScheduleForm selectedContract={selectedContract} setModalVisible={setModalVisible} />
+        <CreateScheduleForm fetchSchedules={fetchSchedules} selectedContract={selectedContract} setModalVisible={setModalVisible} />
       </Modal>
 
       {/* Drawer list all Schedules Unit when selected a Schedule */}
@@ -178,16 +176,8 @@ const Schedules = (props) => {
         getContainer={false}
         style={{ position: "absolute" }}
         width={"100%"}
-        // extra={
-        //   <Space>
-        //     <Button onClick={() => setDrawerVisible(false)}>Đóng</Button>
-        //     <Button type="primary" onClick={() =>}>
-        //       + Thêm mới
-        //     </Button>
-        //   </Space>
-        // }
       >
-        <SchedulesUnit />
+        {selectedPlan && <SchedulesUnit selectedPlan={selectedPlan} />}
       </Drawer>
     </GlobalContent>
   );

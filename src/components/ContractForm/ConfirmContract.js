@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Descriptions, Divider, Table } from "antd";
 import { GlobalDescriptions } from "../../configs/styled.global";
 import moment from "moment";
-import CollapsePanel from "./CollapsePanel";
-function ConfirmContract(props) {
-  const { contract, selectedClient } = props;
 
+function ConfirmContract(props) {
+  const { contract, selectedClient, customValues } = props;
+  const [datasource, setDatasource] = useState();
   const columns = [
     {
       title: "TT",
@@ -32,6 +32,55 @@ function ConfirmContract(props) {
     },
   ];
 
+  useEffect(() => {
+    if (customValues) {
+      console.log(customValues);
+      setDatasource([
+        {
+          id: 2506,
+          name: "Xà phòng",
+          unit: "Gam",
+          effort: "1",
+        },
+        {
+          id: 2507,
+          name: "Khăn",
+          unit: "Chiếc",
+          effort: "2",
+        },
+        {
+          id: 2508,
+          name: "Chổi - Mo hót",
+          unit: "Chiếc",
+          effort: "2",
+        },
+        {
+          id: 2509,
+          name: "Xô, giỏ vắt",
+          unit: "Chiếc",
+          effort: "4",
+        },
+        {
+          id: 2510,
+          name: "Bàn chải cứng",
+          unit: "Chiếc",
+          effort: "7",
+        },
+        {
+          id: 2511,
+          name: "Găng tay",
+          unit: "Chiếc",
+          effort: "1",
+        },
+        {
+          id: 2512,
+          name: "Nhân công",
+          unit: "Công",
+          effort: "31",
+        },
+      ]);
+    }
+  }, [customValues]);
   return (
     <div>
       {selectedClient && (
@@ -44,18 +93,20 @@ function ConfirmContract(props) {
         </GlobalDescriptions>
       )}
       <Divider />
-      <GlobalDescriptions labelStyle={{ width: 300 }} bordered column={1} title={"Thông tin hợp đồng"}>
-        <Descriptions.Item label={contract["effectiveTimeFrom"].label}>
-          {moment(contract["effectiveTimeFrom"].value).format("DD/MM/YYYY") || "Chưa có thông tin"}
-        </Descriptions.Item>
-      </GlobalDescriptions>
+      {contract && (
+        <GlobalDescriptions labelStyle={{ width: 300 }} bordered column={1} title={"Thông tin hợp đồng"}>
+          <Descriptions.Item label={contract["effectiveTimeFrom"].label}>
+            {moment(contract["effectiveTimeFrom"].value).format("DD/MM/YYYY") || "Chưa có thông tin"}
+          </Descriptions.Item>
+        </GlobalDescriptions>
+      )}
 
       <Divider />
       <GlobalDescriptions labelStyle={{ width: 300 }} bordered column={1} title={"Thông tin đối tượng"}>
         <Descriptions.Item label="Số lượng đối tượng">
           {(
             <>
-              3 Tiểu bộ phận - 6 Đối tượng{" "}
+              {customValues.svcSpendTaskForAreaDTOs && customValues.svcSpendTaskForAreaDTOs.length} Tiểu bộ phận - 6 Đối tượng{" "}
               <Button onClick={() => props.setCurrent(2)} style={{ float: "right" }} type="link" size="small">
                 Chi tiết
               </Button>
@@ -69,28 +120,7 @@ function ConfirmContract(props) {
       <GlobalDescriptions labelStyle={{ width: 300 }} bordered column={1} title={"Hao phí vật tư, hóa chất; máy, thiết bị"}></GlobalDescriptions>
       <Table
         pagination={false}
-        dataSource={[
-          {
-            name: "Chổi cán dài",
-            unit: "Chiếc",
-            mass: 3,
-          },
-          {
-            name: "Xô nhựa",
-            unit: "Chiếc",
-            mass: 5,
-          },
-          {
-            name: "Hóa chất X",
-            unit: "ml",
-            mass: 50,
-          },
-          {
-            name: "Máy ABC",
-            unit: "ca",
-            mass: 0.5,
-          },
-        ]}
+        dataSource={datasource}
         columns={columns}
         locale={{
           emptyText: <span>Chưa có dữ liệu!</span>,

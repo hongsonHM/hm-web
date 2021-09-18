@@ -17,6 +17,7 @@ const EditContract = (props) => {
   const selectedContract = useSelector(getContract);
   const [clients, setClients] = useState([]);
   const [serviceManager, setServiceManager] = useState([]);
+  const [businessManager, setBusinessManager] = useState([]);
 
   const getClients = async () => {
     const res = await getAllClients();
@@ -25,7 +26,9 @@ const EditContract = (props) => {
 
   const getServiceManager = async () => {
     const res = await getUserByRole("SERVICE_MANAGER");
+    const bm = await getUserByRole("BUSINESS_MANAGER");
     setServiceManager(res.data);
+    setBusinessManager(bm.data);
   };
 
   useEffect(() => {
@@ -55,7 +58,15 @@ const EditContract = (props) => {
     <GlobalContent key="edit_contract">
       <GlobalTitle title={`Chỉnh sửa hợp đồng ${selectedContract && selectedContract.documentId}`} level={3} color="#3eb8f8" />
       <br />
-      <ContractForm serviceManager={serviceManager} customers={clients} actions={updateContractById} client={client} contract={contract} cid={cid} />
+      <ContractForm
+        businessManager={businessManager}
+        serviceManager={serviceManager}
+        customers={clients}
+        actions={updateContractById}
+        client={client}
+        contract={contract}
+        cid={cid}
+      />
     </GlobalContent>
   );
 };

@@ -1,9 +1,26 @@
 import React, { useState } from "react";
-import { Table, Button, Input } from "antd"
+import { Table, Button, Input } from "antd";
 import ToggleEditInputStatus from "../ToggleEditInputStatus";
+import { buildingObjName } from "./mock";
+
+const TableInput = (props) => {
+  const { disabled, record } = props;
+  const [value, setValue] = useState();
+  return (
+    <Input
+      disabled={disabled}
+      size="middle"
+      value={value}
+      onChange={(e) => {
+        setValue(e.target.value);
+        props.actions(e.target.value);
+      }}
+    />
+  );
+};
 
 function CollapsePanel(props) {
-  const { sub } = props;
+  const { sub, subDivisions } = props;
   const [editStatus, setEditStatus] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
 
@@ -18,7 +35,15 @@ function CollapsePanel(props) {
       dataIndex: "mass",
       key: "mass",
       render: (mass, record) => (
-        <div className="flex__between__center">{<Input disabled={!editStatus || selectedRecord !== record.id} size="middle" value={mass} />}</div>
+        <TableInput
+          actions={(value) => {
+            record.mass = value;
+            props.setSubDivisions([...subDivisions]);
+          }}
+          disabled={!editStatus || selectedRecord !== record.id}
+          value={mass || 0}
+          record={record}
+        />
       ),
     },
     {
@@ -31,7 +56,14 @@ function CollapsePanel(props) {
       dataIndex: "note",
       key: "note",
       render: (value, record) => (
-        <div className="flex__between__center">{<Input disabled={!editStatus || selectedRecord !== record.id} size="middle" value={value} />}</div>
+        <TableInput
+          actions={(note) => {
+            record.note = note;
+            props.setSubDivisions([...subDivisions]);
+          }}
+          disabled={!editStatus || selectedRecord !== record.id}
+          value={value}
+        />
       ),
     },
     {
@@ -57,18 +89,27 @@ function CollapsePanel(props) {
       ),
     },
   ];
+  
   return (
     <>
       <Table
         pagination={false}
-        dataSource={sub.objects}
+        dataSource={sub.svcSpendTaskDTOs}
         columns={columns}
         locale={{
           emptyText: <span>Vui lòng chọn các đối tượng có trong khu vực!</span>,
         }}
       />
       <div style={{ marginTop: 15 }} className="flex__center__center">
-        <Button type="primary" onClick={() => props.setIsModalVisible(true)}>
+        <Button
+          type="primary"
+          onClick={() => {
+            props.setSelectedId(sub.svcAreaDTO.key);
+            props.setIsModalVisible(true);
+            props.setCheckedList(buildingObjName(sub.svcSpendTaskDTOs));
+            console.log(sub);
+          }}
+        >
           Chỉnh sửa đối tượng
         </Button>
         &nbsp;&nbsp;
@@ -76,7 +117,6 @@ function CollapsePanel(props) {
           Xóa tiểu bộ phận
         </Button>
       </div>
-
     </>
   );
 }

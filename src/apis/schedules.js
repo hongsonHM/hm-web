@@ -1,16 +1,16 @@
 import retryHandleApis from "../configs/handleApis";
 
 // svc-schedule-plan-resource
-export const getAllSchedules = () => {
-  return retryHandleApis("/svc-schedule-plans", "GET",);
+export const getAllSchedulesByContractId = (contract_id) => {
+  return retryHandleApis(`/svc-plans?contractId.equals=${contract_id}`, "GET",);
 };
 
 export const getScheduleById = (id) => {
-  return retryHandleApis(`/svc-schedule-plans/${id}`, "GET",);
+  return retryHandleApis(`/svc-plans/${id}`, "GET",);
 };
 
 export const createSchedule = (data) => {
-  return retryHandleApis("/svc-schedule-plans", "POST", data);
+  return retryHandleApis("/svc-plans", "POST", data);
 };
 
 // svc-schedule-plan-record-resource
@@ -27,16 +27,16 @@ export const createScheduleRecord = (data) => {
 };
 
 // svc-schedule-unit-resource
-export const getAllScheduleUnit = () => {
-  return retryHandleApis("/svc-schedule-plan-units", "GET");
+export const getAllPlanUnitByPlanId = (plan_id) => {
+  return retryHandleApis(`/svc-plan-units?svcPlanId.equals=${plan_id}`, "GET");
 };
 
-export const getScheduleUnitById = (id) => {
-  return retryHandleApis(`/svc-schedule-plan-units/${id}`, "GET",);
+export const getPlanUnitById = (id) => {
+  return retryHandleApis(`/svc-plan-units/${id}`, "GET",);
 };
 
-export const createScheduleUnit= (data) => {
-  return retryHandleApis("/svc-schedule-plan-units", "POST", data);
+export const createPlanUnit= (data) => {
+  return retryHandleApis("/svc-plan-units", "POST", data);
 };
 
 // svc-schedule-unit-record-resource
