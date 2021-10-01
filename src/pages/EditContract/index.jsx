@@ -44,7 +44,7 @@ const EditContract = (props) => {
 
   const fetchContractById = async () => {
     const data = await getContractById(cid);
-    dispatch(setCurrentContract(data.data));
+    dispatch(setCurrentContract(data.data.svcContractDTO));
   };
 
   useEffect(() => {

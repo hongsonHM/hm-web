@@ -47,14 +47,11 @@ export const roles = {
       key: "del_user",
       path: "/del_user",
     },
-    // {
-    //   name: "Giao dịch nội bộ",
-    //   key: "insider_transaction",
-    //   path: "/insider_transaction",
-    //   submenu: [
-
-    //   ],
-    // },
+    {
+      name: "Lên kế hoạch",
+      key: "schedules",
+      path: "/schedules",
+    },
     {
       name: "Thông tin bộ phận",
       key: "division_info",
@@ -106,11 +103,6 @@ export const roles = {
       key: "request_admin",
       path: "/insider_transaction/request_admin",
     },
-    {
-      name: "Lên kế hoạch",
-      key: "schedules",
-      path: "/schedules",
-    },
     // {
     //   name: "Giao dịch nội bộ",
     //   key: "insider_transaction",
@@ -131,6 +123,18 @@ export const roles = {
       path: "/dashboard",
     },
   ],
+  SUPERVISOR: [
+    {
+      name: "Dashboard",
+      key: "dashboard",
+      path: "/dashboard",
+    },
+    {
+      name: "Kế hoạch",
+      key: "schedules_record",
+      path: "/schedules_record",
+    },
+  ]
 };
 
 // ["management", "admin", "staff", "monitoring"]

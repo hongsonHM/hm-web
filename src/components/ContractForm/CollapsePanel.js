@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Table, Button, Input } from "antd";
+import { Table, Button, Input, Select, Space } from "antd";
 import ToggleEditInputStatus from "../ToggleEditInputStatus";
 import { buildingObjName } from "./mock";
+const { Option } = Select;
 
 const TableInput = (props) => {
   const { disabled, record } = props;
@@ -19,10 +20,23 @@ const TableInput = (props) => {
   );
 };
 
+const tansuat = [
+  { value: "day", label: "	lần/ngày" },
+  { value: "week", label: "	lần/tuần" },
+  { value: "month", label: "	lần/tháng" },
+  { value: "year", label: "	lần/năm" },
+];
+
 function CollapsePanel(props) {
   const { sub, subDivisions } = props;
   const [editStatus, setEditStatus] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
+
+  const saveRecord = () => {
+    console.log(sub.svcSpendTaskDTOs);
+    setEditStatus(false);
+    setSelectedRecord(null);
+  };
 
   const columns = [
     {
@@ -40,7 +54,7 @@ function CollapsePanel(props) {
             record.mass = value;
             props.setSubDivisions([...subDivisions]);
           }}
-          disabled={!editStatus || selectedRecord !== record.id}
+          disabled={!editStatus || selectedRecord !== record.coreTaskId}
           value={mass || 0}
           record={record}
         />
@@ -52,6 +66,37 @@ function CollapsePanel(props) {
       key: "unit",
     },
     {
+      title: "Tần suất",
+      dataIndex: "frequency",
+      key: "frequency",
+      render: (value, record) => (
+        <Space className="flex__between__center">
+          <TableInput
+            actions={(frequency) => {
+              record.frequency = frequency;
+              props.setSubDivisions([...subDivisions]);
+            }}
+            disabled={!editStatus || selectedRecord !== record.coreTaskId}
+            value={value}
+          />
+          <Select
+            size="middle"
+            style={{ width: 120 }}
+            onChange={(e) => {
+              record.frequency = `${record.frequency}/${e}`;
+              props.setSubDivisions([...subDivisions]);
+            }}
+          >
+            {tansuat.map((ts, index) => (
+              <Option key={index} value={ts.value}>
+                {ts.label}
+              </Option>
+            ))}
+          </Select>
+        </Space>
+      ),
+    },
+    {
       title: "Ghi chú",
       dataIndex: "note",
       key: "note",
@@ -61,7 +106,7 @@ function CollapsePanel(props) {
             record.note = note;
             props.setSubDivisions([...subDivisions]);
           }}
-          disabled={!editStatus || selectedRecord !== record.id}
+          disabled={!editStatus || selectedRecord !== record.coreTaskId}
           value={value}
         />
       ),
@@ -72,24 +117,21 @@ function CollapsePanel(props) {
       key: "actions",
       render: (value, record) => (
         <ToggleEditInputStatus
-          condition={!(!editStatus || selectedRecord !== record.id)}
-          onOk={() => {
-            setEditStatus(false);
-            setSelectedRecord(null);
-          }}
+          condition={!(!editStatus || selectedRecord !== record.coreTaskId)}
+          onOk={() => saveRecord()}
           onCancel={() => {
             setEditStatus(false);
             setSelectedRecord(null);
           }}
           actions={() => {
             setEditStatus(!editStatus);
-            setSelectedRecord(record.id);
+            setSelectedRecord(record.coreTaskId);
           }}
         />
       ),
     },
   ];
-  
+
   return (
     <>
       <Table

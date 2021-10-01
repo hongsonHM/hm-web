@@ -5,10 +5,11 @@ import CreateScheduleUnitForm from "./CreateScheduleUnitForm";
 import { getAllPlanUnitByPlanId } from "../../../apis/schedules";
 import { getCoreTasks } from "../../../apis/contract";
 import { getArrayObjectName } from "../../../utils";
+import SelectLaborer from "./SelectLaborer";
 
 const defaultCheckedList = [];
 const DEFAULT_SUPPLIES = 48;
-const DEFAULT_SUBJECTS = ['Xà phòng', 'Khăn', 'Chổi - Mo hót', 'Xô, giỏ vắt', 'Bàn chải cứng', 'Găng tay']
+const DEFAULT_SUBJECTS = ["Xà phòng", "Khăn", "Chổi - Mo hót", "Xô, giỏ vắt", "Bàn chải cứng", "Găng tay"];
 
 function SchedulesUnit(props) {
   const { selectedPlan } = props;
@@ -21,6 +22,7 @@ function SchedulesUnit(props) {
   const [checkAll, setCheckAll] = useState(false);
   const [selectedPlanUnit, setSelectedPlanUnit] = useState();
   const [coreTasks, setCoreTasks] = useState();
+  const [modalSelectLabor, setModalSelectLabor] = useState(false);
 
   const columns = [
     {
@@ -57,7 +59,20 @@ function SchedulesUnit(props) {
       title: "Vật tư, hóa chất, thiết bị",
       dataIndex: "",
       key: "",
-      render: () => checkedList.length && DEFAULT_SUBJECTS.join(", ")
+      render: () => checkedList.length && DEFAULT_SUBJECTS.join(", "),
+    },
+    {
+      title: "Nhân công",
+      dataIndex: "",
+      key: "",
+      render: () => (
+        <>
+          3 người
+          <Button type="link" size="small" className="btn--right" onClick={() => setModalSelectLabor(true)}>
+            Chi tiết
+          </Button>
+        </>
+      ),
     },
   ];
 
@@ -138,13 +153,7 @@ function SchedulesUnit(props) {
         }
         visible={isModalVisible}
         onOk={() => {
-          // const selectetItem = subDivisions.filter((e) => e.id === selectedId)[0];
-          // const selectedTasks = coreTasks.filter((task) => checkedList.includes(task.name));
-          // selectetItem.svcSpendTaskDTOs = selectedTasks;
-          // setSubDivisions([...subDivisions]);
-          // props.setCustomValues(Object.assign(customValues, { svcSpendTaskForAreaDTOs: subDivisions }));
           setIsModalVisible(false);
-          // setCheckedList([]);
         }}
         onCancel={() => setIsModalVisible(false)}
       >
@@ -155,6 +164,11 @@ function SchedulesUnit(props) {
           onChange={onChange}
           style={{ width: "100%" }}
         />
+      </Modal>
+
+      {/* Modal add new Schedules Unit */}
+      <Modal width={'50vw'} footer={null} title="Nhân công" visible={modalSelectLabor} onOk={() => setModalSelectLabor(false)} onCancel={() => setModalSelectLabor(false)}>
+        <SelectLaborer setModalSelectLabor={setModalSelectLabor} />
       </Modal>
     </>
   );

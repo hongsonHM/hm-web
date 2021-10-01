@@ -13,6 +13,7 @@ import ContractDetails from '../../pages/ContractDetails'
 import EditContract from '../../pages/EditContract'
 import Schedules from '../../pages/Schedules'
 import SchedulesRecord from '../../pages/SchedulesRecord'
+import DivisionInfor from '../../pages/DivisionInfor'
 
 const contents = [
   {
@@ -61,7 +62,7 @@ const contents = [
   },
   {
     param: "contract_details",
-    component: () => <ContractDetails />
+    component: () => <EditContract />
   },
   {
     param: "edit_contract",
@@ -69,7 +70,7 @@ const contents = [
   },
   {
     param: "division_info",
-    component: () => <Dashboard />
+    component: () => <DivisionInfor />
   },
   {
     param: "schedules",

@@ -4,9 +4,11 @@ import { StyledTable } from "../../../assets/styled/table.styled";
 import { mockScheduleUnits } from "../mock";
 import CreateScheduleUnitForm from "./CreateScheduleUnitForm";
 import SwitchStatus from "./SwitchStatus";
+import SelectLaborer from "./SelectLaborer";
 
 function SchedulesUnit(props) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalSelectLabor, setModalSelectLabor] = useState(false);
 
   const columns = [
     {
@@ -85,6 +87,16 @@ function SchedulesUnit(props) {
       {/* Modal add new Schedules Unit */}
       <Modal footer={null} title="Thêm mới nhiệm vụ" visible={modalVisible} onOk={() => setModalVisible(false)} onCancel={() => setModalVisible(false)}>
         <CreateScheduleUnitForm setModalVisible={setModalVisible} />
+      </Modal>
+      {/* Modal add new Schedules Unit */}
+      <Modal
+        footer={null}
+        title="Nhân công"
+        visible={modalSelectLabor}
+        onOk={() => setModalSelectLabor(false)}
+        onCancel={() => setModalSelectLabor(false)}
+      >
+        <SelectLaborer setModalSelectLabor={setModalSelectLabor} />
       </Modal>
     </>
   );

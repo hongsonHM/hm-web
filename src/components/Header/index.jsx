@@ -7,68 +7,14 @@ import { LogoutOutlined, UserOutlined, NotificationOutlined } from "@ant-design/
 import { useHistory } from "react-router-dom";
 import Cookies from "js-cookie";
 import { getNotification } from "../../apis/notifications";
-
-const notiList = {
-  BUSINESS_STAFF: [
-    {
-      key: 1,
-      title: "Hợp đồng đã được phê duyệt",
-      desc: `Hợp đồng số "03/04HM" đã được ADMIN phê duyệt!`,
-      readed: false,
-      create_at: "3 giây trước",
-      status: "success",
-    },
-    {
-      key: 2,
-      title: "Hợp đồng đã được phê duyệt",
-      desc: `Hợp đồng số "11/234HM" đã được ADMIN phê duyệt!`,
-      readed: true,
-      create_at: "1 ngày trước",
-      status: "success",
-    },
-    {
-      key: 3,
-      title: "Hợp đồng bị từ chối",
-      desc: 'Hợp đồnh số "55/HM21" đã bị từ chối!',
-      readed: true,
-      create_at: "1 ngày trước",
-      status: "error",
-    },
-    {
-      key: 4,
-      title: "Hợp đồng sắp đáo hạn !",
-      desc: 'Hợp đồnh số "107/12HM" sắp đáo hạn!',
-      readed: true,
-      create_at: "4 ngày trước",
-      status: "warning",
-    },
-  ],
-  admin: [
-    {
-      key: 1,
-      title: "Hợp đồng cần được phê duyệt",
-      desc: `Hợp đồng số "03/04HM" cần được phê duyệt, hãy kiểm tra ngay!`,
-      readed: false,
-      create_at: "3 giây trước",
-      status: "process",
-    },
-    {
-      key: 2,
-      title: "Hợp đồng cần được phê duyệt",
-      desc: `Hợp đồng số "11/234HM" cần được phê duyệt, hãy kiểm tra ngay!`,
-      readed: true,
-      create_at: "1 ngày trước",
-      status: "process",
-    },
-  ],
-};
+import { checkObjEmpty } from "../../utils";
 
 const roleToText = {
   SERVICE_MANAGER: "Quản lý dịch vụ",
   BUSINESS_STAFF: "Nhân viên kinh doanh",
   HUMANRESOURCE_STAFF: "Nhân sự",
   SUPPLY_STAFF: "Nhân viên cung ứng",
-  BUSINESS_MANAGER: "Quản lý kinh doanh",
+  BUSINESS_MANAGER: "Quản lý cao cấp",
 };
 
 function Header(props) {
@@ -76,17 +22,16 @@ function Header(props) {
   let history = useHistory();
   const [noti, setNoti] = useState();
   const [visible, setVisible] = useState(false);
-
   const fetchNotifications = async () => {
-    const res = await getNotification();
+    const res = await getNotification(currentUser.id);
     setNoti(res.data);
   };
 
   useEffect(() => {
     if (!noti) {
-      fetchNotifications();
+      if (checkObjEmpty(currentUser)) fetchNotifications();
     }
-  }, [noti]);
+  }, [noti, currentUser]);
 
   const menu = (
     <Menu>
@@ -112,7 +57,10 @@ function Header(props) {
     if (noti)
       return noti.map((item, index) => (
         <div
-          onClick={() => history.push(`/contract_details?cid=${item.key}`)}
+          onClick={() => {
+            console.log(item, JSON.parse(item.data));
+            history.push(`/contract_details?cid=${JSON.parse(item.data)}`)
+          }}
           className={`notification_item flex__start__center ${item.status} ${item.isRead ? "" : "unread"}`}
           key={index}
         >

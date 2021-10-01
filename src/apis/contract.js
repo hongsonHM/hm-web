@@ -1,11 +1,11 @@
 import retryHandleApis from "../configs/handleApis";
 
 export const getAllContract = (options) => {
-  return retryHandleApis("/svc-contracts", 'GET')
+  return retryHandleApis(`/svc-contracts?sort.sorted=false`, 'GET')
 }
 
 export const getContractById = (cid) => {
-  return retryHandleApis(`/svc-contracts/${cid}`, 'GET')
+  return retryHandleApis(`/full-contract/${cid}`, 'GET')
 }
 export const getContractByStatus = (status) => {
   return retryHandleApis(`/svc-contracts/?status=${status}`, 'GET')
@@ -20,7 +20,7 @@ export const partialUpdateSvcContract = (cid, data) => {
 }
 
 export const createContract = (id, data) => {
-  return retryHandleApis(`/svc-contracts`, 'POST', data)
+  return retryHandleApis(`/full-contract`, 'POST', data)
 }
 
 export const getAllClients = () => {
@@ -32,6 +32,15 @@ export const createClient = (data) => {
 export const getCoreSupplies = () => {
   return retryHandleApis(`/core-supplies`, 'GET')
 }
+
 export const getCoreTasks = () => {
   return retryHandleApis(`/core-tasks?size=117`, 'GET')
+}
+
+export const getPreviewSupplies = (data) => {
+  return retryHandleApis(`/preview-supplies`, 'POST', data)
+}
+
+export const getOrgGroups = () => {
+  return retryHandleApis(`/org-groups`, 'GET' )
 }

@@ -125,9 +125,7 @@ const RequestAdmin = (props) => {
         title={null}
         visible={visibleModal}
         onOk={async () => {
-          console.log(Object.assign(selectedContract, { approvedBy: approvedBy, status: "PENDING" }));
           const res = await partialUpdateSvcContract(selectedContract.id, Object.assign(selectedContract, { approvedBy: approvedBy, status: "PENDING" }));
-          console.log(res);
           switch (res.status) {
             case 200:
             case 201:

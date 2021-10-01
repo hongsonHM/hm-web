@@ -195,9 +195,10 @@ export const buildingObject = [
 ];
 
 export const buildingObjName = (obj) => {
-  const arr = []
+  const arr = [];
   for (const property in obj) {
-    arr.push(obj[property].name)
+    arr.push(obj[property].name);
   }
-  return arr
-}
+  return arr;
+};
+

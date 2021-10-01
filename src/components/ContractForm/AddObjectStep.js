@@ -57,6 +57,14 @@ function AddObjectStep(props) {
     }
   }, [plainOptions]);
 
+  const saveNameSubDivision = () => {
+    setEditTitle(false);
+    const selectetItem = subDivisions.filter((e) => e.svcAreaDTO.key === selectedId)[0];
+    selectetItem.svcAreaDTO.name = value;
+    setSubDivisions([...subDivisions]);
+    setValue("");
+  };
+
   return (
     <>
       <div className="flex__end__center">
@@ -88,19 +96,14 @@ function AddObjectStep(props) {
                       style={{ width: 200 }}
                       value={value}
                       onChange={(e) => setValue(e.target.value)}
+                      onPressEnter={(e) => saveNameSubDivision()}
                     />
                   ) : (
                     sub.svcAreaDTO.name
                   )}{" "}
                   <ToggleEditInputStatus
                     condition={editTitle && selectedId === sub.svcAreaDTO.key}
-                    onOk={() => {
-                      setEditTitle(false);
-                      const selectetItem = subDivisions.filter((e) => e.svcAreaDTO.key === selectedId)[0];
-                      selectetItem.svcAreaDTO.name = value;
-                      setSubDivisions([...subDivisions]);
-                      setValue("");
-                    }}
+                    onOk={() => saveNameSubDivision()}
                     onCancel={() => {
                       setEditTitle(false);
                     }}
@@ -140,6 +143,12 @@ function AddObjectStep(props) {
         onOk={() => {
           const selectetItem = subDivisions.filter((e) => e.svcAreaDTO.key === selectedId)[0];
           const selectedTasks = coreTasks.filter((task) => checkedList.includes(task.name));
+          console.log(coreTasks);
+          selectedTasks.forEach((task) => (task.coreTaskId = task.id));
+          selectedTasks.forEach((d) => {
+            // delete d["name"];
+            delete d["id"];
+          });
           selectetItem.svcSpendTaskDTOs = selectedTasks;
           setSubDivisions([...subDivisions]);
           props.setCustomValues(Object.assign(customValues, { svcSpendTaskForAreaDTOs: subDivisions }));

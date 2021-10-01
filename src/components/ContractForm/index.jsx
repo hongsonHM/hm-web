@@ -9,14 +9,32 @@ import moment from "moment";
 import AddObjectStep from "./AddObjectStep";
 import ConfirmContract from "./ConfirmContract";
 import { GlobalDescriptions } from "../../configs/styled.global";
+import { getPreviewSupplies } from "../../apis/contract";
 
 const CheckboxGroup = Checkbox.Group;
 const { Option } = Select;
 
-const plainOptions = ["Nhân viên cung ứng", "Nhân sự"];
-const defaultCheckedList = ["Nhân viên cung ứng", "Nhân sự"];
-const subjectOptions = ["Bồn rửa mặt", "Bồn cầu", "Gương", "Sàn nhà", "Cửa kính", "Quạt trần", "Cây cảnh"];
-const defaultSubjectCheckedList = [];
+const orgGroups = [
+  {
+      "id": 2,
+      "name": "Phòng Nhân Sự"
+  },
+  {
+      "id": 3,
+      "name": "Phòng Kinh Doanh"
+  },
+  {
+      "id": 4,
+      "name": "Phòng Cung Ứng"
+  },
+  {
+      "id": 5,
+      "name": "Phòng Giám Sát"
+  }
+]
+
+const plainOptions = ["Phòng Kinh Doanh", "Phòng Nhân Sự", "Phòng Cung Ứng", "Phòng Giám Sát"];
+const defaultCheckedList = ["Phòng Kinh Doanh", "Phòng Nhân Sự", "Phòng Cung Ứng", "Phòng Giám Sát"];
 const { Step } = Steps;
 
 const ContractForm = (props) => {
@@ -24,7 +42,6 @@ const ContractForm = (props) => {
   const [form] = Form.useForm();
   const [current, setCurrent] = React.useState(0);
   const [checkedList, setCheckedList] = React.useState(defaultCheckedList);
-  const [checkedSubjectList, setCheckedSubjectList] = useState(defaultSubjectCheckedList);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedClient, setSelectedClient] = useState();
   const [customValues, setCustomValues] = useState({
@@ -33,6 +50,8 @@ const ContractForm = (props) => {
       id: 1,
     },
   });
+  const [formContent, setFormContent] = useState();
+  const [previewSupplies, setPreviewSupplies] = useState();
 
   const next = () => {
     setCurrent(current + 1);
@@ -42,13 +61,17 @@ const ContractForm = (props) => {
     setCurrent(current - 1);
   };
 
+  const cleanSpendTaskDTO = (data) => {
+    return data;
+  };
+
   const onFinish = async (formData) => {
-    let cloneObj = Object.assign(formData, customValues)
-    delete cloneObj['svcSpendTaskForAreaDTOs']; 
+    let cloneObj = Object.assign(formData, customValues);
+    delete cloneObj["svcSpendTaskForAreaDTOs"];
     const newData = {
       svcContractDTO: cloneObj,
-      svcSpendTaskForAreaDTOs: customValues.svcSpendTaskForAreaDTOs
-    }
+      svcSpendTaskForAreaDTOs: cleanSpendTaskDTO(customValues.svcSpendTaskForAreaDTOs),
+    };
     const res = await props.actions(
       cid,
       // Object.assign(formData, { durationMonth: caculatorMonths, client: selectedCustomer, status: status, approvedBy: approveBy, ownerBy: { id: 1 } })
@@ -204,7 +227,13 @@ const ContractForm = (props) => {
       title: "Xác nhận thông tin",
       icon: <ProfileOutlined />,
       content: (
-        <ConfirmContract selectedClient={selectedClient} contract={props.contract} setCurrent={setCurrent} customValues={customValues} />
+        <ConfirmContract
+          selectedClient={selectedClient}
+          contract={props.contract}
+          setCurrent={setCurrent}
+          customValues={customValues}
+          previewSupplies={previewSupplies}
+        />
       ),
     },
     {
@@ -231,7 +260,7 @@ const ContractForm = (props) => {
           <Form.Item label="Quản lý dịch vụ" name="managerBy" valuePropName="checked">
             <CheckboxGroup
               onChange={(checkedValues) => {
-                setCheckedSubjectList(checkedValues);
+                // setCheckedSubjectList(checkedValues);
                 setCustomValues(Object.assign(customValues, { managerBy: serviceManager.filter((manager) => checkedValues.includes(manager.id)) }));
               }}
             >
@@ -249,7 +278,7 @@ const ContractForm = (props) => {
               options={plainOptions}
               value={checkedList}
               onChange={(list) => {
-                setCustomValues(Object.assign(customValues, { notificationUnits: ["SUPPLY_STAFF", "HUMANRESOURCE_STAFF"] }));
+                setCustomValues(Object.assign(customValues, { notificationUnits: orgGroups.filter((group, index) => list.includes(group.name) ) }));
                 setCheckedList(list);
               }}
             />
@@ -259,11 +288,22 @@ const ContractForm = (props) => {
     },
   ];
 
+  const fetchPreviewSupplies = async () => {
+    if (customValues.svcSpendTaskForAreaDTOs) {
+      const data = await getPreviewSupplies({
+        svcContractDTO: formContent,
+        svcSpendTaskForAreaDTOs: customValues.svcSpendTaskForAreaDTOs,
+      });
+
+      setPreviewSupplies(data.data);
+    }
+  };
+
   return (
     <StyledContractForm>
       <Steps current={current}>
         {steps.map((item, index) => (
-          <Step onClick={() => setCurrent(index)} icon={item.icon} key={item.title} title={item.title} />
+          <Step icon={item.icon} key={item.title} title={item.title} />
         ))}
       </Steps>
       <Form
@@ -280,8 +320,17 @@ const ContractForm = (props) => {
         size="large"
         onFinish={onFinish}
         onFinishFailed={() => setCurrent(1)}
+        onValuesChange={(e, formData) => setFormContent(formData)}
       >
-        <FormContents customValues={customValues} setCustomValues={setCustomValues} steps={steps} current={current} next={next} prev={prev} />
+        <FormContents
+          fetchPreviewSupplies={fetchPreviewSupplies}
+          customValues={customValues}
+          setCustomValues={setCustomValues}
+          steps={steps}
+          current={current}
+          next={next}
+          prev={prev}
+        />
       </Form>
 
       <Modal footer={null} title="Thêm mới khách hàng" visible={modalVisible} onOk={() => setModalVisible(false)} onCancel={() => setModalVisible(false)}>

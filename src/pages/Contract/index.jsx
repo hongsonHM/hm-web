@@ -19,7 +19,7 @@ import Descriptions from "../../components/Descriptions";
 import { useDispatch } from "react-redux";
 import { setCurrentContract } from "../../stores/contractSlice";
 import { useHistory } from "react-router-dom";
-import { getAllContract } from "../../apis/contract";
+import { getAllContract, getContractById } from "../../apis/contract";
 import UploadXlsx from "../../components/UploadXlsx";
 
 const { TabPane } = Tabs;
@@ -168,6 +168,12 @@ const Contract = (props) => {
     history.push(`/edit_contract?cid=${selectedContract.id}`);
   };
 
+  const getContractRecord = async (id) => {
+    const contract = await getContractById(id);
+    setSelectedContract(contract.data.svcContractDTO);
+    setVisibleModal(true);
+  };
+
   return (
     <GlobalContent key="contract">
       <GlobalTitle title="Danh Sách hợp đồng" level={3} color="#3eb8f8" extra={<UploadXlsx />} />
@@ -175,12 +181,10 @@ const Contract = (props) => {
       <StyledTable
         onRow={(record, rowIndex) => {
           return {
-            onClick: (event) => {
-              setSelectedContract(record);
-              setVisibleModal(true);
-            }, // click row
+            onClick: (event) => getContractRecord(record.id), // click row
           };
         }}
+        rowKey="id"
         columns={columns}
         dataSource={contracts}
         loading={{
@@ -214,7 +218,7 @@ const Contract = (props) => {
             <Descriptions.Item label="Số điện thoại">{selectedContract.client.phoneNumber || "Chưa có thông tin"}</Descriptions.Item>
           </GlobalDescriptions>
         )}
-        <br/>
+        <br />
         <Descriptions
           bordered
           column={1}
@@ -222,12 +226,12 @@ const Contract = (props) => {
           data={selectedContract && mergeContractToInitialContract(selectedContract)}
           labelStyle={{ width: 300 }}
         />
-        <br/>
+        <br />
         {selectedContract && selectedContract.client && (
           <GlobalDescriptions labelStyle={{ width: 300 }} bordered column={1} title={"Chuyển tiếp thông tin"}>
-            <Descriptions.Item label="Quản lý cao cấp">{selectedContract.approvedBy || "Chưa có thông tin"}</Descriptions.Item>
-            <Descriptions.Item label="Quản lý dịch vụ">{selectedContract.service_manager || "Chưa có thông tin"}</Descriptions.Item>
-            <Descriptions.Item label="Các bộ phận tiếp nhận thông tin">{selectedContract.transferTo || "Chưa có thông tin"}</Descriptions.Item>
+            <Descriptions.Item label="Quản lý cao cấp">{ selectedContract.approveBy.length} người</Descriptions.Item>
+            <Descriptions.Item label="Quản lý dịch vụ">{selectedContract.managerBy.length} người</Descriptions.Item>
+            <Descriptions.Item label="Các bộ phận tiếp nhận thông tin">{selectedContract.notificationUnits.length || "Không có bộ phận nào được chọn"}</Descriptions.Item>
           </GlobalDescriptions>
         )}
         <br />

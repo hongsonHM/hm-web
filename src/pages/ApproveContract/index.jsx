@@ -118,15 +118,6 @@ const ApproveContract = (props) => {
           indicator: <LoadingOutlined spin />,
         }}
       />
-      {selectedContract && selectedContract.client && (
-        <GlobalDescriptions bordered column={2} title={"Thông tin khách hàng"}>
-          <Descriptions.Item label="Tên khách hàng">{selectedContract.client.customerName || "Chưa có thông tin"}</Descriptions.Item>
-          <Descriptions.Item label="Tỉnh/Tp">{selectedContract.client.customerCity || "Chưa có thông tin"}</Descriptions.Item>
-          <Descriptions.Item label="Địa chỉ">{selectedContract.client.address || "Chưa có thông tin"}</Descriptions.Item>
-          <Descriptions.Item label="Số điện thoại">{selectedContract.client.phoneNumber || "Chưa có thông tin"}</Descriptions.Item>
-        </GlobalDescriptions>
-      )}
-      <br />
       {/* Modal
             Handle contents at renderModalContent func      
       */}

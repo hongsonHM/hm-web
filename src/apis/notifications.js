@@ -1,5 +1,5 @@
 import retryHandleApis from "../configs/handleApis";
 
-export const getNotification = (options) => {
-  return retryHandleApis("/org-notifications", "GET", options);
+export const getNotification = (orgUserId) => {
+  return retryHandleApis(`/org-notifications?orgUserId.equals=${orgUserId}&sort.sorted=false`, "GET");
 };

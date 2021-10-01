@@ -7,7 +7,7 @@ function FormContents(props) {
   return (
     <Fragment>
       {steps.map((item, index) => (
-        <div className={`steps-content ${current === index ? "active" : "hidden"}`}>{steps[index].content}</div>
+        <div key={index} className={`steps-content ${current === index ? "active" : "hidden"}`}>{steps[index].content}</div>
       ))}
       <div className="steps-action flex__center__center">
         {current > 0 && (
@@ -19,6 +19,9 @@ function FormContents(props) {
           <Button size="large" type="primary" onClick={() => {
             props.next()
             props.setCustomValues(Object.assign({}, customValues))
+            if(current === 2) {
+              props.fetchPreviewSupplies()
+            }
           }}>
             Tiếp theo
           </Button>
