@@ -6,20 +6,20 @@ export const roles = {
       path: "/dashboard",
     },
     {
-      name: "Kế hoạch",
-      key: "schedules_record",
-      path: "/schedules_record",
+      name: "Danh sách hợp đồng",
+      key: "contract",
+      path: "/insider_transaction/contract",
     },
-    // {
-    //   name: "Thêm người dùng",
-    //   key: "add_user",
-    //   path: "/add_user",
-    // },
-    // {
-    //   name: "Xóa người dùng",
-    //   key: "del_user",
-    //   path: "/del_user",
-    // },
+    {
+      name: "Kế hoạch",
+      key: "schedules",
+      path: "/schedules",
+    },
+    {
+      name: "Quản lý thông báo",
+      key: "add_user",
+      path: "/add_user",
+    },
   ],
   BUSINESS_MANAGER: [
     {
@@ -36,21 +36,6 @@ export const roles = {
       name: "Phê duyệt hợp đồng",
       key: "approve_contract",
       path: "/approve_contract",
-    },
-    {
-      name: "Thêm người dùng",
-      key: "add_user",
-      path: "/add_user",
-    },
-    {
-      name: "Xóa người dùng",
-      key: "del_user",
-      path: "/del_user",
-    },
-    {
-      name: "Lên kế hoạch",
-      key: "schedules",
-      path: "/schedules",
     },
     {
       name: "Thông tin bộ phận",

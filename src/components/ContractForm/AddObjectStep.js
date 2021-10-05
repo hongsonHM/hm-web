@@ -146,7 +146,6 @@ function AddObjectStep(props) {
           console.log(coreTasks);
           selectedTasks.forEach((task) => (task.coreTaskId = task.id));
           selectedTasks.forEach((d) => {
-            // delete d["name"];
             delete d["id"];
           });
           selectetItem.svcSpendTaskDTOs = selectedTasks;

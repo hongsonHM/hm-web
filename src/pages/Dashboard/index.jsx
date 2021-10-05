@@ -6,23 +6,23 @@ import { FieldTimeOutlined, FileSyncOutlined, FundViewOutlined, TeamOutlined, Fi
 import GlobalTitle from "../../components/GlobalTitle";
 import { Line } from "react-chartjs-2";
 import { getDashboard } from "../../apis/dashboard";
-import { friendlyStringMoney } from '../../utils'
+import { friendlyStringMoney } from "../../utils";
 
 const { Option } = Select;
 const USER_HAS_CHART = ["BUSINESS_MANAGER", "BUSINESS_STAFF"];
 
 const Dashboard = (props) => {
-  const [filter, setFilter] = useState('monthly');
+  const [filter, setFilter] = useState("monthly");
   const [dataOverview, setDataOverview] = useState({});
 
   const getDataOverview = async () => {
     const res = await getDashboard();
     console.log(res);
-    setDataOverview(res.data)
-  }
+    setDataOverview(res.data);
+  };
 
   useEffect(() => {
-    if(!dataOverview) getDataOverview()
+    if (!dataOverview) getDataOverview();
   }, [dataOverview]);
 
   const overview = [
@@ -89,39 +89,37 @@ const Dashboard = (props) => {
         {renderDashboardContent()}
       </StyledDashboardRow>
 
-      {USER_HAS_CHART.includes(localStorage.roles) && (
-        <Fragment>
-          <br />
-          <GlobalTitle
-            title="Thống kê"
-            level={3}
-            color="#3eb8f8"
-            extra={
-              <Select defaultValue="30days" onChange={(value) => {}}>
-                <Option value="30days">theo tháng</Option>
-                <Option value="60days">theo quý</Option>
-              </Select>
-            }
-          />
-          <br />
-          <Row className="flex__between__center table_with_chart">
-            <Col span={11}>
-              <GlobalDescriptions bordered column={1} title={null}>
-                <Descriptions.Item label="Tổng số hợp đồng">{dataOverview.totalContract}</Descriptions.Item>
-                <Descriptions.Item label="Hợp đồng chuẩn bị đáo hạn">{dataOverview.totalContractWillBeEndIn3Month}</Descriptions.Item>
-                <Descriptions.Item label="Hợp đồng đang nợ">2</Descriptions.Item>
-                <Descriptions.Item label="Hợp đồng đã dừng">271</Descriptions.Item>
-                <Descriptions.Item label="Số hợp đồng mới">{dataOverview.totalContractNew}</Descriptions.Item>
-                <Descriptions.Item label="Tổng doanh thu">1010101</Descriptions.Item>
-                <Descriptions.Item label="Tổng số nhân viên đang hoạt động">197</Descriptions.Item>
-              </GlobalDescriptions>
-            </Col>
-            <Col span={12}>
-              <Line height="350" width="700" data={data} />
-            </Col>
-          </Row>
-        </Fragment>
-      )}
+      <Fragment>
+        <br />
+        <GlobalTitle
+          title="Thống kê"
+          level={3}
+          color="#3eb8f8"
+          extra={
+            <Select defaultValue="30days" onChange={(value) => {}}>
+              <Option value="30days">theo tháng</Option>
+              <Option value="60days">theo quý</Option>
+            </Select>
+          }
+        />
+        <br />
+        <Row className="flex__between__center table_with_chart">
+          <Col span={11}>
+            <GlobalDescriptions bordered column={1} title={null}>
+              <Descriptions.Item label="Tổng số hợp đồng">{dataOverview.totalContract}</Descriptions.Item>
+              <Descriptions.Item label="Hợp đồng chuẩn bị đáo hạn">{dataOverview.totalContractWillBeEndIn3Month}</Descriptions.Item>
+              <Descriptions.Item label="Hợp đồng đang nợ">2</Descriptions.Item>
+              <Descriptions.Item label="Hợp đồng đã dừng">271</Descriptions.Item>
+              <Descriptions.Item label="Số hợp đồng mới">{dataOverview.totalContractNew}</Descriptions.Item>
+              <Descriptions.Item label="Tổng doanh thu">1010101</Descriptions.Item>
+              <Descriptions.Item label="Tổng số nhân viên đang hoạt động">197</Descriptions.Item>
+            </GlobalDescriptions>
+          </Col>
+          <Col span={12}>
+            <Line height="350" width="700" data={data} />
+          </Col>
+        </Row>
+      </Fragment>
     </GlobalContent>
   );
 };

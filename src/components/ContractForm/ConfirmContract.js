@@ -90,10 +90,10 @@ function ConfirmContract(props) {
         }
       >
         <Descriptions.Item label="Số lượng đối tượng">
-          {(customValues.svcSpendTaskForAreaDTOs && customValues.svcSpendTaskForAreaDTOs.length + "Tiểu bộ phận - 6 Đối tượng") || "Chưa có thông tin"}
+          {(customValues.svcSpendTaskForAreaDTOs && customValues.svcSpendTaskForAreaDTOs.length + "Tiểu bộ phận") || "Chưa có thông tin"}
         </Descriptions.Item>
         <Descriptions.Item label="Tổng hao phí nhân công">
-          {customValues.svcSpendTaskForAreaDTOs ? "302 công tương đương 1 người" : "Chưa có thông tin"}
+          {previewSupplies ? previewSupplies[2].effort : "Chưa có thông tin"}
         </Descriptions.Item>
       </GlobalDescriptions>
 

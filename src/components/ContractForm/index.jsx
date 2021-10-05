@@ -10,36 +10,34 @@ import AddObjectStep from "./AddObjectStep";
 import ConfirmContract from "./ConfirmContract";
 import { GlobalDescriptions } from "../../configs/styled.global";
 import { getPreviewSupplies } from "../../apis/contract";
+import { useHistory } from "react-router-dom";
 
 const CheckboxGroup = Checkbox.Group;
 const { Option } = Select;
 
 const orgGroups = [
   {
-      "id": 2,
-      "name": "Phòng Nhân Sự"
+    id: 2,
+    name: "Phòng Nhân Sự",
   },
   {
-      "id": 3,
-      "name": "Phòng Kinh Doanh"
+    id: 3,
+    name: "Phòng Kinh Doanh",
   },
   {
-      "id": 4,
-      "name": "Phòng Cung Ứng"
+    id: 4,
+    name: "Phòng Cung Ứng",
   },
-  {
-      "id": 5,
-      "name": "Phòng Giám Sát"
-  }
-]
+];
 
-const plainOptions = ["Phòng Kinh Doanh", "Phòng Nhân Sự", "Phòng Cung Ứng", "Phòng Giám Sát"];
-const defaultCheckedList = ["Phòng Kinh Doanh", "Phòng Nhân Sự", "Phòng Cung Ứng", "Phòng Giám Sát"];
+const plainOptions = ["Phòng Kinh Doanh", "Phòng Nhân Sự", "Phòng Cung Ứng"];
+const defaultCheckedList = ["Phòng Kinh Doanh", "Phòng Nhân Sự", "Phòng Cung Ứng"];
 const { Step } = Steps;
 
 const ContractForm = (props) => {
   const { cid, customers, serviceManager, businessManager, client, contract } = props;
   const [form] = Form.useForm();
+  let history = useHistory();
   const [current, setCurrent] = React.useState(0);
   const [checkedList, setCheckedList] = React.useState(defaultCheckedList);
   const [modalVisible, setModalVisible] = useState(false);
@@ -82,6 +80,9 @@ const ContractForm = (props) => {
       case 201:
         {
           message.success("Tạo hợp đồng thành công!");
+          setTimeout(() => {
+            history.push("/insider_transaction/contract")
+          }, 1000);
         }
         break;
 
@@ -260,7 +261,6 @@ const ContractForm = (props) => {
           <Form.Item label="Quản lý dịch vụ" name="managerBy" valuePropName="checked">
             <CheckboxGroup
               onChange={(checkedValues) => {
-                // setCheckedSubjectList(checkedValues);
                 setCustomValues(Object.assign(customValues, { managerBy: serviceManager.filter((manager) => checkedValues.includes(manager.id)) }));
               }}
             >
@@ -273,12 +273,17 @@ const ContractForm = (props) => {
               </Row>
             </CheckboxGroup>
           </Form.Item>
-          <Form.Item label="Bộ phận tiếp nhận" name="notificationUnits" valuePropName="checked">
+          <Form.Item
+            // initialValue={orgGroups.filter((group, index) => plainOptions.includes(group.name))}
+            label="Bộ phận tiếp nhận"
+            name="notificationUnits"
+            valuePropName="checked"
+          >
             <CheckboxGroup
               options={plainOptions}
               value={checkedList}
               onChange={(list) => {
-                setCustomValues(Object.assign(customValues, { notificationUnits: orgGroups.filter((group, index) => list.includes(group.name) ) }));
+                setCustomValues(Object.assign(customValues, { notificationUnits: orgGroups.filter((group, index) => list.includes(group.name)) }));
                 setCheckedList(list);
               }}
             />
@@ -294,8 +299,10 @@ const ContractForm = (props) => {
         svcContractDTO: formContent,
         svcSpendTaskForAreaDTOs: customValues.svcSpendTaskForAreaDTOs,
       });
-
-      setPreviewSupplies(data.data);
+      if (data.status === 201 && data.data.length) {
+        setPreviewSupplies(data.data);
+        next();
+      } else message.error("Vui lòng nhập đầy đủ dữ liệu của đối tượng !");
     }
   };
 
@@ -330,6 +337,8 @@ const ContractForm = (props) => {
           current={current}
           next={next}
           prev={prev}
+          selectedClient={selectedClient}
+          formContent={formContent}
         />
       </Form>
 

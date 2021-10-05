@@ -1,14 +1,18 @@
 import React, { useState } from "react";
-import { Table, Button, Input, Select, Space } from "antd";
+import { Table, Button, Input, Select, Space, message, Modal } from "antd";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 import ToggleEditInputStatus from "../ToggleEditInputStatus";
 import { buildingObjName } from "./mock";
+
 const { Option } = Select;
+const { confirm } = Modal;
 
 const TableInput = (props) => {
   const { disabled, record } = props;
   const [value, setValue] = useState();
   return (
     <Input
+      type="number"
       disabled={disabled}
       size="middle"
       value={value}
@@ -32,10 +36,33 @@ function CollapsePanel(props) {
   const [editStatus, setEditStatus] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
 
+  function showDeleteConfirm(id) {
+    confirm({
+      title: "Bạn có thực sự muốn xóa tiểu bộ phận này?",
+      icon: <ExclamationCircleOutlined />,
+      content: null,
+      okText: "Vẫn xóa",
+      okType: "danger",
+      cancelText: "Thôi",
+      width: '450px',
+      onOk() {
+        deleteCollapsePanel(id);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  }
+
   const saveRecord = () => {
-    console.log(sub.svcSpendTaskDTOs);
     setEditStatus(false);
     setSelectedRecord(null);
+  };
+
+  const deleteCollapsePanel = (id) => {
+    const filteredItems = subDivisions.filter((item) => item.svcAreaDTO.key !== id);
+    props.setSubDivisions(filteredItems);
+    console.log(filteredItems);
   };
 
   const columns = [
@@ -86,6 +113,7 @@ function CollapsePanel(props) {
               record.frequency = `${record.frequency}/${e}`;
               props.setSubDivisions([...subDivisions]);
             }}
+            disabled={!editStatus || selectedRecord !== record.coreTaskId}
           >
             {tansuat.map((ts, index) => (
               <Option key={index} value={ts.value}>
@@ -149,13 +177,18 @@ function CollapsePanel(props) {
             props.setSelectedId(sub.svcAreaDTO.key);
             props.setIsModalVisible(true);
             props.setCheckedList(buildingObjName(sub.svcSpendTaskDTOs));
-            console.log(sub);
           }}
         >
           Chỉnh sửa đối tượng
         </Button>
         &nbsp;&nbsp;
-        <Button type="primary" danger>
+        <Button
+          type="primary"
+          danger
+          onClick={() => {
+            showDeleteConfirm(sub.svcAreaDTO.key);
+          }}
+        >
           Xóa tiểu bộ phận
         </Button>
       </div>
