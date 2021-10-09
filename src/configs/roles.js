@@ -16,6 +16,11 @@ export const roles = {
       path: "/schedules",
     },
     {
+      name: "Lên kế hoạch",
+      key: "create_plans",
+      path: "/create_plans",
+    },
+    {
       name: "Quản lý thông báo",
       key: "add_user",
       path: "/add_user",

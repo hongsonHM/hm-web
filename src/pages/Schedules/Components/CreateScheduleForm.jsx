@@ -11,13 +11,13 @@ function CreateScheduleForm(props) {
   const [serviceManager, setServiceManager] = useState();
   const [humanResourceStaffs, setHumanResourceStaffs] = useState();
 
-  const getServiceManager = async () => {
-    const res = await getUserByRole("SERVICE_MANAGER");
-    setServiceManager(res.data);
-  };
   const getHumanResourceStaff = async () => {
     const res = await getUserByRole("HUMAN_RESOURCE_STAFF");
     setHumanResourceStaffs(res.data);
+  };
+  const getServiceManager = async () => {
+    const res = await getUserByRole("SERVICE_MANAGER");
+    setServiceManager(res.data);
   };
 
   useEffect(() => {

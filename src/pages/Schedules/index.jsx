@@ -5,7 +5,6 @@ import { Select, Button, Empty, Descriptions, Typography, Modal, Divider, Drawer
 import { getAllContract } from "../../apis/contract";
 import { StyledTable } from "../../assets/styled/table.styled";
 import { LoadingOutlined } from "@ant-design/icons";
-import { mockSchedules } from "./mock";
 import SwitchStatus from "./Components/SwitchStatus";
 import moment from "moment";
 import CreateScheduleForm from "./Components/CreateScheduleForm";

@@ -12,6 +12,9 @@ export const getScheduleById = (id) => {
 export const createSchedule = (data) => {
   return retryHandleApis("/svc-plans", "POST", data);
 };
+export const createPlan = (data) => {
+  return retryHandleApis("/svc-full-plans", "POST", data);
+};
 
 // svc-schedule-plan-record-resource
 export const getAllScheduleRecords = () => {
@@ -32,7 +35,7 @@ export const getAllPlanUnitByPlanId = (plan_id) => {
 };
 
 export const getPlanUnitById = (id) => {
-  return retryHandleApis(`/svc-plan-units/${id}`, "GET",);
+  return retryHandleApis(`/svc-full-plans/${id}`, "GET",);
 };
 
 export const createPlanUnit= (data) => {
