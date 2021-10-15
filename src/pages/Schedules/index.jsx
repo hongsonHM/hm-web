@@ -9,7 +9,7 @@ import SwitchStatus from "./Components/SwitchStatus";
 import moment from "moment";
 import CreateScheduleForm from "./Components/CreateScheduleForm";
 import SchedulesUnit from "./Components/SchedulesUnit";
-import { getAllSchedulesByContractId } from "../../apis/schedules";
+import { getAllSchedulesByContractId, getAllSchedules } from "../../apis/schedules";
 
 const { Option } = Select;
 const Schedules = (props) => {
@@ -27,8 +27,14 @@ const Schedules = (props) => {
   };
 
   // get all schedules of a contract
-  const fetchSchedules = async () => {
+  const fetchSchedulesById = async () => {
     const response = await getAllSchedulesByContractId(selectedContract.id);
+    setSchedules(response.data);
+  };
+
+  // get all schedules of a contract
+  const fetchSchedules = async () => {
+    const response = await getAllSchedules();
     setSchedules(response.data);
   };
 
@@ -40,8 +46,8 @@ const Schedules = (props) => {
 
   useEffect(() => {
     if (selectedContract) {
-      fetchSchedules();
-    }
+      fetchSchedulesById();
+    } else fetchSchedules();
   }, [selectedContract]);
 
   const columns = [
@@ -55,13 +61,19 @@ const Schedules = (props) => {
       title: "Quản lý dịch vụ",
       dataIndex: "serviceManager",
       key: "serviceManager",
-      render: (serviceManager) => (serviceManager ? serviceManager.name.toUpperCase() : "CHƯA CÓ DỮ LIỆU"),
+      render: (serviceManager) => (serviceManager ? `${serviceManager.firstName} ${serviceManager.lastName}` : "CHƯA CÓ DỮ LIỆU"),
     },
     {
       title: "Giám sát",
-      dataIndex: "defaultSupervisor",
-      key: "defaultSupervisor",
-      render: (defaultSupervisor) => (defaultSupervisor ? defaultSupervisor.name.toUpperCase() : "CHƯA CÓ DỮ LIỆU"),
+      dataIndex: "suppervisor",
+      key: "suppervisor",
+      render: (suppervisor) => (suppervisor ? `${suppervisor.firstName} ${suppervisor.lastName}` : "CHƯA CÓ DỮ LIỆU"),
+    },
+    {
+      title: "Hợp đồng số",
+      dataIndex: "contractId",
+      key: "contractId",
+      render: (contractId) => (contractId ? contractId : "CHƯA CÓ DỮ LIỆU"),
     },
     {
       title: "Trạng thái",
@@ -96,10 +108,9 @@ const Schedules = (props) => {
     <GlobalContent key="create_plan" className="site-drawer-render-in-current-wrapper">
       <GlobalTitle title="Quản lý kế hoạch" level={3} color="#3eb8f8" extra={<ButtonCreateSchedule />} />
 
-      {/* Search and select Contract before create plan */}
       <Select
         showSearch
-        placeholder="Chọn 1 hợp đồng"
+        placeholder="Lọc kế hoạch theo hợp đồng"
         optionFilterProp="children"
         onChange={(e) => {
           setSelectedContract(contracts.filter((c) => c.id === e)[0]);
@@ -116,7 +127,10 @@ const Schedules = (props) => {
             </Option>
           ))}
       </Select>
-      {selectedContract ? (
+
+      <Divider />
+      <Typography.Title level={5}>Danh sách kế hoạch ({schedules && schedules.length})</Typography.Title>
+      {selectedContract && (
         <>
           <Divider />
           <Descriptions labelStyle={{ fontWeight: 600 }} column={2} title="Thông tin hợp đồng">
@@ -128,41 +142,38 @@ const Schedules = (props) => {
             <Descriptions.Item label="Số lượng công">320 công</Descriptions.Item>
             {/* <Descriptions.Item label="Nội dung">{selectedContract.content}</Descriptions.Item> */}
           </Descriptions>
-          <Divider />
-          <Typography.Title level={5}>Danh sách kế hoạch ({schedules && schedules.length})</Typography.Title>
-          <StyledTable
-            onRow={(record, rowIndex) => {
-              return {
-                onClick: (event) => {
-                  setSelectedPlan(record);
-                  // setSelectedContract(record);
-                  setDrawerVisible(true);
-                }, // click row
-              };
-            }}
-            columns={columns}
-            dataSource={schedules}
-            locale={{
-              emptyText: (
-                <>
-                  <p>Chưa có kế hoạch nào cho hợp đồng này!</p>
-                  <ButtonCreateSchedule />
-                </>
-              ),
-            }}
-            loading={{
-              spinning: contracts ? false : true,
-              indicator: <LoadingOutlined spin />,
-            }}
-          />
         </>
-      ) : (
-        <Empty description="Chọn một hợp đồng để bắt đầu" />
       )}
+      <StyledTable
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => {
+              setSelectedPlan(record);
+              // setSelectedContract(record);
+              setDrawerVisible(true);
+            }, // click row
+          };
+        }}
+        rowKey="id"
+        columns={columns}
+        dataSource={schedules}
+        locale={{
+          emptyText: (
+            <>
+              <p>Chưa có kế hoạch nào cho hợp đồng này!</p>
+              <ButtonCreateSchedule />
+            </>
+          ),
+        }}
+        loading={{
+          spinning: contracts ? false : true,
+          indicator: <LoadingOutlined spin />,
+        }}
+      />
 
       {/* Modal add new Schedules */}
       <Modal footer={null} title="Thêm mới kế hoạch" visible={modalVisible} onOk={() => setModalVisible(false)} onCancel={() => setModalVisible(false)}>
-        <CreateScheduleForm fetchSchedules={fetchSchedules} selectedContract={selectedContract} setModalVisible={setModalVisible} />
+        <CreateScheduleForm fetchSchedules={fetchSchedulesById} selectedContract={selectedContract} setModalVisible={setModalVisible} />
       </Modal>
 
       {/* Drawer list all Schedules Unit when selected a Schedule */}

@@ -81,7 +81,7 @@ function CollapsePanel(props) {
             record.mass = value;
             props.setSubDivisions([...subDivisions]);
           }}
-          disabled={!editStatus || selectedRecord !== record.coreTaskId}
+          disabled={!editStatus || selectedRecord !== record.coreTask.id}
           value={mass || 0}
           record={record}
         />
@@ -103,7 +103,7 @@ function CollapsePanel(props) {
               record.frequency = frequency;
               props.setSubDivisions([...subDivisions]);
             }}
-            disabled={!editStatus || selectedRecord !== record.coreTaskId}
+            disabled={!editStatus || selectedRecord !== record.coreTask.id}
             value={value}
           />
           <Select
@@ -113,7 +113,7 @@ function CollapsePanel(props) {
               record.frequency = `${record.frequency}/${e}`;
               props.setSubDivisions([...subDivisions]);
             }}
-            disabled={!editStatus || selectedRecord !== record.coreTaskId}
+            disabled={!editStatus || selectedRecord !== record.coreTask.id}
           >
             {tansuat.map((ts, index) => (
               <Option key={index} value={ts.value}>
@@ -134,7 +134,7 @@ function CollapsePanel(props) {
             record.note = note;
             props.setSubDivisions([...subDivisions]);
           }}
-          disabled={!editStatus || selectedRecord !== record.coreTaskId}
+          disabled={!editStatus || selectedRecord !== record.coreTask.id}
           value={value}
         />
       ),
@@ -145,7 +145,7 @@ function CollapsePanel(props) {
       key: "actions",
       render: (value, record) => (
         <ToggleEditInputStatus
-          condition={!(!editStatus || selectedRecord !== record.coreTaskId)}
+          condition={!(!editStatus || selectedRecord !== record.coreTask.id)}
           onOk={() => saveRecord()}
           onCancel={() => {
             setEditStatus(false);
@@ -153,7 +153,7 @@ function CollapsePanel(props) {
           }}
           actions={() => {
             setEditStatus(!editStatus);
-            setSelectedRecord(record.coreTaskId);
+            setSelectedRecord(record.coreTask.id);
           }}
         />
       ),

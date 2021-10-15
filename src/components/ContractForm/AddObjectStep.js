@@ -140,19 +140,20 @@ function AddObjectStep(props) {
           </Checkbox>
         }
         visible={isModalVisible}
-        onOk={() => {
+        onOk={async () => {
           const selectetItem = subDivisions.filter((e) => e.svcAreaDTO.key === selectedId)[0];
           const selectedTasks = coreTasks.filter((task) => checkedList.includes(task.name));
           console.log(coreTasks);
-          selectedTasks.forEach((task) => (task.coreTaskId = task.id));
-          selectedTasks.forEach((d) => {
-            delete d["id"];
-          });
+          await selectedTasks.forEach((task) => (task.coreTask = { id: task.id }));
+
           selectetItem.svcSpendTaskDTOs = selectedTasks;
           setSubDivisions([...subDivisions]);
           props.setCustomValues(Object.assign(customValues, { svcSpendTaskForAreaDTOs: subDivisions }));
           setIsModalVisible(false);
           setCheckedList([]);
+          selectedTasks.forEach((d) => {
+            delete d["id"];
+          });
         }}
         onCancel={() => setIsModalVisible(false)}
       >

@@ -1,129 +1,134 @@
 import React, { useState, useEffect } from "react";
 import { Button, Typography, Modal, Checkbox } from "antd";
 import { StyledTable } from "../../../assets/styled/table.styled";
-import CreateScheduleUnitForm from "./CreateScheduleUnitForm";
 import { getAllPlanUnitByPlanId } from "../../../apis/schedules";
-import { getCoreTasks } from "../../../apis/contract";
-import { getArrayObjectName } from "../../../utils";
 import SelectLaborer from "./SelectLaborer";
-
-const defaultCheckedList = [];
-const DEFAULT_SUPPLIES = 48;
-const DEFAULT_SUBJECTS = ["Xà phòng", "Khăn", "Chổi - Mo hót", "Xô, giỏ vắt", "Bàn chải cứng", "Găng tay"];
 
 function SchedulesUnit(props) {
   const { selectedPlan } = props;
-  const [modalVisible, setModalVisible] = useState(false);
   const [planUnits, setPlanUnits] = useState();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [plainOptions, setPlainOptions] = useState();
-  const [checkedList, setCheckedList] = useState(defaultCheckedList);
-  const [indeterminate, setIndeterminate] = useState(true);
-  const [checkAll, setCheckAll] = useState(false);
-  const [selectedPlanUnit, setSelectedPlanUnit] = useState();
-  const [coreTasks, setCoreTasks] = useState();
   const [modalSelectLabor, setModalSelectLabor] = useState(false);
+
+  const renderValueByText = (value, key) => {
+    let day = value[0].workOnDays.split(",").filter((work) => work.includes(key))[0]
+    return day ? day.split("-")[1] : 0
+  }
 
   const columns = [
     {
-      title: "Start time",
-      dataIndex: "startAt",
-      key: "startAt",
+      title: "Vị trí",
+      dataIndex: "location",
+      key: "location",
+    },
+    {
+      title: "Bắt đầu",
+      dataIndex: "svcPlanPartDTOList",
+      key: "svcPlanPartDTOList",
+      render: (value) => value[0].startAt,
+    },
+    {
+      title: "Kết thúc",
+      dataIndex: "endAt",
+      key: "endAt",
     },
     {
       title: "Đối tượng",
-      dataIndex: "tasks",
-      key: "tasks",
-      render: (value, record) => (
-        <div className="flex__between__center">
-          {checkedList ? checkedList.length : 0}/117{" "}
-          <Button
-            type="link"
-            onClick={() => {
-              setIsModalVisible(true);
-              setSelectedPlanUnit(record);
-            }}
-          >
-            Sửa
-          </Button>
-        </div>
-      ),
+      dataIndex: "svcPlanPartDTOList",
+      key: "svcPlanPartDTOList",
+      render: value => value[0].svcSpendTask.coreTask.name
     },
     {
-      title: "Số lượng công",
-      dataIndex: "",
-      key: "",
-      render: () => DEFAULT_SUPPLIES * checkedList.length,
+      title: "Hóa chất",
+      dataIndex: "hc",
+      key: "hc",
+      render: () => 0,
     },
     {
-      title: "Vật tư, hóa chất, thiết bị",
+      title: "Máy móc",
+      dataIndex: "mm",
+      key: "mm",
+      render: () => 0,
+    },
+    {
+      title: "CCDC",
       dataIndex: "",
       key: "",
-      render: () => checkedList.length && DEFAULT_SUBJECTS.join(", "),
+      render: () => 1,
+    },
+    {
+      title: "Công",
+      dataIndex: "nc",
+      key: "nc",
+      render: () => 1,
+    },
+    {
+      title: "Tần suất",
+      dataIndex: "frequency",
+      key: "frequency",
+      render: (value) => `${value.split("/")[0]} lần / ${value.split("/")[1]}`,
+    },
+    {
+      title: "Thứ 2",
+      dataIndex: "svcPlanPartDTOList",
+      key: "svcPlanPartDTOList",
+      render: (value) => renderValueByText(value, 'mon')
+    },
+    {
+      title: "Thứ 3",
+      dataIndex: "svcPlanPartDTOList",
+      key: "svcPlanPartDTOList",
+      render: (value) =>renderValueByText(value, 'tue')
+    },
+    {
+      title: "Thứ 4",
+      dataIndex: "svcPlanPartDTOList",
+      key: "svcPlanPartDTOList",
+      render: (value) => renderValueByText(value, 'wed')
+    },
+    {
+      title: "Thứ 5",
+      dataIndex: "svcPlanPartDTOList",
+      key: "svcPlanPartDTOList",
+      render: (value) => renderValueByText(value, 'thu')
+    },
+    {
+      title: "Thứ 6",
+      dataIndex: "svcPlanPartDTOList",
+      key: "svcPlanPartDTOList",
+      render: (value) => renderValueByText(value, 'fri')
+    },
+    {
+      title: "Thứ 7",
+      dataIndex: "svcPlanPartDTOList",
+      key: "svcPlanPartDTOList",
+      render: (value) => renderValueByText(value, 'sat')
+    },
+    {
+      title: "Chủ nhật",
+      dataIndex: "svcPlanPartDTOList",
+      key: "svcPlanPartDTOList",
+      render: (value) => renderValueByText(value, 'sun')
     },
     {
       title: "Nhân công",
       dataIndex: "",
       key: "",
-      render: () => (
-        <>
-          3 người
-          <Button type="link" size="small" className="btn--right" onClick={() => setModalSelectLabor(true)}>
-            Chi tiết
-          </Button>
-        </>
-      ),
     },
   ];
 
   const fetchPlanUnits = async () => {
     const res = await getAllPlanUnitByPlanId(selectedPlan.id);
-    setPlanUnits(res.data);
+    setPlanUnits(res.data.svcPlanUnitDTOList);
   };
-
-  const onChange = (list) => {
-    setCheckedList(list);
-    setIndeterminate(!!list.length && list.length < plainOptions.length);
-    setCheckAll(list.length === plainOptions.length);
-    console.log(list);
-  };
-
-  const onCheckAllChange = (e) => {
-    setCheckedList(e.target.checked ? plainOptions : []);
-    setIndeterminate(false);
-    setCheckAll(e.target.checked);
-  };
-
-  const fetchCoreTasks = async () => {
-    const res = await getCoreTasks();
-    const planopts = getArrayObjectName(res.data);
-    setCoreTasks(res.data);
-    setPlainOptions([...new Set(planopts)]);
-  };
-
-  useEffect(() => {
-    if (!plainOptions) {
-      fetchCoreTasks();
-    }
-  }, [plainOptions]);
 
   useEffect(() => {
     fetchPlanUnits();
   }, [selectedPlan]);
 
-  useEffect(() => {
-    if (checkedList.length) {
-      const listTasks = coreTasks.filter((task) => checkedList.includes(task.name));
-      console.log(listTasks);
-    }
-  }, [checkedList]);
   return (
     <>
       <Typography.Title level={5} className="flex__between__center">
         {planUnits && planUnits.length ? `${planUnits.length} nhiệm vụ được hiển thị` : `Không có nhiệm vụ nào!`}
-        <Button danger type="primary" onClick={() => setModalVisible(true)}>
-          + Thêm mới nhiệm vụ
-        </Button>
       </Typography.Title>
       <StyledTable
         columns={columns}
@@ -139,35 +144,16 @@ function SchedulesUnit(props) {
           ),
         }}
       />
-      {/* Modal add new Schedules Unit */}
-      <Modal footer={null} title="Thêm mới nhiệm vụ" visible={modalVisible} onOk={() => setModalVisible(false)} onCancel={() => setModalVisible(false)}>
-        <CreateScheduleUnitForm fetchPlanUnits={fetchPlanUnits} selectedPlan={selectedPlan} setModalVisible={setModalVisible} />
-      </Modal>
 
+      {/* Modal add new Schedules Unit */}
       <Modal
-        width="80vw"
-        title={
-          <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll} value={1}>
-            Chọn tất cả ({plainOptions && plainOptions.length} đối tượng)
-          </Checkbox>
-        }
-        visible={isModalVisible}
-        onOk={() => {
-          setIsModalVisible(false);
-        }}
-        onCancel={() => setIsModalVisible(false)}
+        width={"50vw"}
+        footer={null}
+        title="Nhân công"
+        visible={modalSelectLabor}
+        onOk={() => setModalSelectLabor(false)}
+        onCancel={() => setModalSelectLabor(false)}
       >
-        <Checkbox.Group
-          className="flex__between__center flex__wrap list_objects_contract"
-          options={plainOptions}
-          value={checkedList}
-          onChange={onChange}
-          style={{ width: "100%" }}
-        />
-      </Modal>
-
-      {/* Modal add new Schedules Unit */}
-      <Modal width={'50vw'} footer={null} title="Nhân công" visible={modalSelectLabor} onOk={() => setModalSelectLabor(false)} onCancel={() => setModalSelectLabor(false)}>
         <SelectLaborer setModalSelectLabor={setModalSelectLabor} />
       </Modal>
     </>

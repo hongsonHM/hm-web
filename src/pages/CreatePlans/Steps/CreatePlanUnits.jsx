@@ -186,6 +186,7 @@ function CreatePlanUnits(props) {
       <Table
         columns={columns}
         dataSource={selectedPlan}
+        rowKey="id"
         locale={{
           emptyText: (
             <>

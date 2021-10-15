@@ -8,9 +8,8 @@ import { Line } from "react-chartjs-2";
 import { getDashboard } from "../../apis/dashboard";
 import { friendlyStringMoney } from "../../utils";
 
-const { TextArea } = Input
+const { TextArea } = Input;
 const { Option } = Select;
-const USER_HAS_CHART = ["BUSINESS_MANAGER", "BUSINESS_STAFF"];
 
 const reports = [
   {
@@ -97,6 +96,20 @@ const Dashboard = (props) => {
         borderColor: "rgb(12, 133, 62)",
         tension: 0.1,
       },
+      {
+        label: "Nhân sự ( theo tháng )",
+        data: [1, 2, 5, 3, 2, 3, 7, 7, 6, 7],
+        fill: false,
+        borderColor: "rgb(167, 179, 12)",
+        tension: 0.1,
+      },
+      {
+        label: "Hợp đồng đáo hạn ( theo tháng )",
+        data: [4, 7, 3, 5, 3, 2, 5, 7, 7, 6],
+        fill: false,
+        borderColor: "rgb(202, 12, 12)",
+        tension: 0.1,
+      },
     ],
   };
 
@@ -108,39 +121,37 @@ const Dashboard = (props) => {
         {renderDashboardContent()}
       </StyledDashboardRow>
 
-      {USER_HAS_CHART.includes(localStorage.roles) && (
-        <Fragment>
-          <br />
-          <GlobalTitle
-            title="Thống kê"
-            level={3}
-            color="#3eb8f8"
-            extra={
-              <Select defaultValue="30days" onChange={(value) => {}}>
-                <Option value="30days">theo tháng</Option>
-                <Option value="60days">theo quý</Option>
-              </Select>
-            }
-          />
-          <br />
-          <Row className="flex__between__center table_with_chart">
-            <Col span={11}>
-              <GlobalDescriptions bordered column={1} title={null}>
-                <Descriptions.Item label="Tổng số hợp đồng">{dataOverview.totalContract}</Descriptions.Item>
-                <Descriptions.Item label="Hợp đồng chuẩn bị đáo hạn">{dataOverview.totalContractWillBeEndIn3Month}</Descriptions.Item>
-                <Descriptions.Item label="Hợp đồng đang nợ">2</Descriptions.Item>
-                <Descriptions.Item label="Hợp đồng đã dừng">271</Descriptions.Item>
-                <Descriptions.Item label="Số hợp đồng mới">{dataOverview.totalContractNew}</Descriptions.Item>
-                <Descriptions.Item label="Tổng doanh thu">1010101</Descriptions.Item>
-                <Descriptions.Item label="Tổng số nhân viên đang hoạt động">197</Descriptions.Item>
-              </GlobalDescriptions>
-            </Col>
-            <Col span={12}>
-              <Line height="350" width="700" data={data} />
-            </Col>
-          </Row>
-        </Fragment>
-      )}
+      <Fragment>
+        <br />
+        <GlobalTitle
+          title="Thống kê"
+          level={3}
+          color="#3eb8f8"
+          extra={
+            <Select defaultValue="30days" onChange={(value) => {}}>
+              <Option value="30days">theo tháng</Option>
+              <Option value="60days">theo quý</Option>
+            </Select>
+          }
+        />
+        <br />
+        <Row className="flex__between__center table_with_chart">
+          <Col span={11}>
+            <GlobalDescriptions bordered column={1} title={null}>
+              <Descriptions.Item label="Tổng số hợp đồng">{dataOverview.totalContract}</Descriptions.Item>
+              <Descriptions.Item label="Hợp đồng chuẩn bị đáo hạn">{dataOverview.totalContractWillBeEndIn3Month}</Descriptions.Item>
+              <Descriptions.Item label="Hợp đồng đang nợ">2</Descriptions.Item>
+              <Descriptions.Item label="Hợp đồng đã dừng">271</Descriptions.Item>
+              <Descriptions.Item label="Số hợp đồng mới">{dataOverview.totalContractNew}</Descriptions.Item>
+              <Descriptions.Item label="Tổng doanh thu">1010101</Descriptions.Item>
+              <Descriptions.Item label="Tổng số nhân viên đang hoạt động">197</Descriptions.Item>
+            </GlobalDescriptions>
+          </Col>
+          <Col span={12}>
+            <Line height="350" width="700" data={data} />
+          </Col>
+        </Row>
+      </Fragment>
       <br />
       <StyledDashboardRow className="flex__between__start ">
         <Col span={16}>
@@ -176,7 +187,7 @@ const Dashboard = (props) => {
           <Select
             size="large"
             showSearch
-            style={{ width: '100%', marginBottom: 15 }}
+            style={{ width: "100%", marginBottom: 15 }}
             placeholder="Chọn một vấn đề"
             optionFilterProp="children"
             onChange={() => {}}
@@ -189,8 +200,11 @@ const Dashboard = (props) => {
             <Option value="5">Tăng nhân công</Option>
             <Option value="6">Giảm nhân công</Option>
           </Select>
-          <TextArea rows={5} size="large" placeholder="Nội dung báo cáo" /><br/>
-          <Button type="primary" size="large" style={{width: '100%', marginTop: 15}}>Tạo báo cáo</Button>
+          <TextArea rows={5} size="large" placeholder="Nội dung báo cáo" />
+          <br />
+          <Button type="primary" size="large" style={{ width: "100%", marginTop: 15 }}>
+            Tạo báo cáo
+          </Button>
         </Col>
       </StyledDashboardRow>
       <br />

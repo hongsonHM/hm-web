@@ -5,6 +5,10 @@ export const getAllSchedulesByContractId = (contract_id) => {
   return retryHandleApis(`/svc-plans?contractId.equals=${contract_id}`, "GET",);
 };
 
+export const getAllSchedules = () => {
+  return retryHandleApis(`/svc-plans`, "GET",);
+};
+
 export const getScheduleById = (id) => {
   return retryHandleApis(`/svc-plans/${id}`, "GET",);
 };
@@ -31,7 +35,7 @@ export const createScheduleRecord = (data) => {
 
 // svc-schedule-unit-resource
 export const getAllPlanUnitByPlanId = (plan_id) => {
-  return retryHandleApis(`/svc-plan-units?svcPlanId.equals=${plan_id}`, "GET");
+  return retryHandleApis(`/svc-full-plans/${plan_id}`, "GET");
 };
 
 export const getPlanUnitById = (id) => {

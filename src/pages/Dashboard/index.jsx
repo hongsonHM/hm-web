@@ -9,7 +9,6 @@ import { getDashboard } from "../../apis/dashboard";
 import { friendlyStringMoney } from "../../utils";
 
 const { Option } = Select;
-const USER_HAS_CHART = ["BUSINESS_MANAGER", "BUSINESS_STAFF"];
 
 const Dashboard = (props) => {
   const [filter, setFilter] = useState("monthly");
@@ -76,6 +75,20 @@ const Dashboard = (props) => {
         data: [2, 3, 3, 4, 5, 4, 5, 7, 5, 6],
         fill: false,
         borderColor: "rgb(12, 133, 62)",
+        tension: 0.1,
+      },
+      {
+        label: "Nhân sự ( theo tháng )",
+        data: [1, 2, 5, 3, 2, 3, 7, 7, 6, 7],
+        fill: false,
+        borderColor: "rgb(167, 179, 12)",
+        tension: 0.1,
+      },
+      {
+        label: "Hợp đồng đáo hạn ( theo tháng )",
+        data: [4, 7, 3, 5, 3, 2, 5, 7, 7, 6],
+        fill: false,
+        borderColor: "rgb(202, 12, 12)",
         tension: 0.1,
       },
     ],

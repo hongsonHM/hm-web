@@ -21,9 +21,14 @@ export const roles = {
       path: "/create_plans",
     },
     {
-      name: "Quản lý thông báo",
+      name: "Tiếp nhận nhiệm vụ",
       key: "add_user",
       path: "/add_user",
+    },
+    {
+      name: "Thông tin bộ phận",
+      key: "division_info",
+      path: "/division_info",
     },
   ],
   BUSINESS_MANAGER: [
@@ -121,10 +126,20 @@ export const roles = {
     },
     {
       name: "Kế hoạch",
-      key: "schedules_record",
-      path: "/schedules_record",
+      key: "schedules",
+      path: "/schedules",
     },
-  ]
+    {
+      name: "Tiếp nhận kế hoạch",
+      key: "add_user",
+      path: "/add_user",
+    },
+    {
+      name: "Thông tin bộ phận",
+      key: "division_info",
+      path: "/division_info",
+    },
+  ],
 };
 
 // ["management", "admin", "staff", "monitoring"]

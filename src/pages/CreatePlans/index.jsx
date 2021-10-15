@@ -7,6 +7,8 @@ import CreatePlan from "./Steps/CreatePlan";
 import CreatePlanUnits from "./Steps/CreatePlanUnits";
 import { FileSearchOutlined, FileAddOutlined, ProfileOutlined, SendOutlined } from "@ant-design/icons";
 import { createPlan } from "../../apis/schedules";
+import PreviewPlan from "./Steps/PreviewPlan";
+import TransferTo from "./Steps/TransferTo";
 
 const day = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 const { Step } = Steps;
@@ -38,9 +40,7 @@ const CreatePlans = (props) => {
         break;
       case 2:
         if (!selectedPlan) message.error("Chưa có tiểu bộ phận nào được thêm !");
-        else {
-          props.fetchPreviewSupplies();
-        }
+        else nextSteps();
         break;
       default:
         nextSteps();
@@ -51,45 +51,49 @@ const CreatePlans = (props) => {
   const onFinish = async () => {
     const svcPlanDTO = {
       contractId: selectedContract.id,
-      defaultSuppervisorId: selectedSupervisor.id,
-      defaultSuppervisorName: `${selectedSupervisor.internalUser.firstName} ${selectedSupervisor.internalUser.lastName}`,
+      // defaultSuppervisorId: selectedSupervisor.id,
+      // defaultSuppervisorName: `${selectedSupervisor.internalUser.firstName} ${selectedSupervisor.internalUser.lastName}`,
+      serviceManager: {
+        id: selectedManager.id
+      },
+      suppervisor: {
+        id: selectedSupervisor.id
+      },
       name: planName,
-      serviceManagerId: selectedManager.id,
-      serviceManagerName: `${selectedManager.internalUser.firstName} ${selectedManager.internalUser.lastName}`,
+      // serviceManagerId: selectedManager.id,
+      // serviceManagerName: `${selectedManager.internalUser.firstName} ${selectedManager.internalUser.lastName}`,
       status: true,
     };
     let a = [];
     selectedPlan.forEach((plan) => {
+      const workOnDays = []; //
+      [plan.mon, plan.tue, plan.wed, plan.thu, plan.fri, plan.sat, plan.sun].forEach((p, index) => {
+        if (p * 1) workOnDays.push([day[index], p]);
+      });
       let obj = {
         frequency: plan.frequency,
-        startAt: '2021-10-06',
-        endAt: plan.endAt,
-        suppervisorId: selectedSupervisor.id,
-        svcPlanPartDTOList: [plan.mon, plan.tue, plan.wed, plan.thu, plan.fri, plan.sat, plan.sun]
-          .filter((p) => {
-            if (p * 1) return true;
-            else return false;
-          })
-          .map((p, index) => {
-            return {
-              periodic: p,
-              workOnDays: day[index],
-            };
-          }),
+        // suppervisorId: selectedSupervisor.id,
+        svcPlanPartDTOList: [
+          {
+            svcSpendTask: {
+              id: plan.id
+            },
+            startAt: plan.startAt,
+            endAt: plan.endAt,
+            periodic: 1,
+            workOnDays: workOnDays.map((work) => work.join("-")).join(","),
+          },
+        ],
       };
       a.push(obj);
     });
-    // const svcPlanUnitDTOList = {
-    //   suppervisorId: selectedSupervisor.id,
-    //   svcPlanPartDTOList: a,
-    // };
     const dataToCreatePlan = {
       svcPlanDTO: svcPlanDTO,
       svcPlanUnitDTOList: a,
     };
-    const response = await createPlan(dataToCreatePlan)
-    console.log(dataToCreatePlan);
-    console.log(response);
+    const response = await createPlan(dataToCreatePlan);
+    if (response.status === 201) message.success("Tạo kế hoạch thành công !");
+    else message.error("Tạo kế hoạch thất bại!");
   };
 
   const steps = [
@@ -117,6 +121,16 @@ const CreatePlans = (props) => {
       title: "Lịch làm việc",
       icon: <FileAddOutlined />,
       content: <CreatePlanUnits selectedPlan={selectedPlan} setSelectedPlan={setSelectedPlan} />,
+    },
+    {
+      title: "Xác nhận thông tin",
+      icon: <FileAddOutlined />,
+      content: <PreviewPlan selectedContract={selectedContract} selectedPlan={selectedPlan} setSelectedPlan={setSelectedPlan} />,
+    },
+    {
+      title: "Chuyển tiếp thông tin",
+      icon: <FileAddOutlined />,
+      content: <TransferTo setSelectedManager={setSelectedManager} setSelectedSupervisor={setSelectedSupervisor} />,
     },
   ];
 
@@ -146,7 +160,15 @@ const CreatePlans = (props) => {
           </Button>
         )}
         {current === steps.length - 1 && (
-          <Button onClick={onFinish} size="large" type="primary">
+          <Button
+            onClick={() => {
+              if (selectedManager && selectedSupervisor) {
+                onFinish();
+              } else message.error("Vui lòng chọn bộ phận tiếp nhận !");
+            }}
+            size="large"
+            type="primary"
+          >
             Tạo hợp đồng
           </Button>
         )}
