@@ -5,7 +5,7 @@ import { Steps, Button, message } from "antd";
 import SelectContract from "./Steps/SelectContract";
 import CreatePlan from "./Steps/CreatePlan";
 import CreatePlanUnits from "./Steps/CreatePlanUnits";
-import { FileSearchOutlined, FileAddOutlined, ProfileOutlined, SendOutlined } from "@ant-design/icons";
+import { FileSearchOutlined, FileAddOutlined, ApartmentOutlined, MonitorOutlined, SendOutlined } from "@ant-design/icons";
 import { createPlan } from "../../apis/schedules";
 import PreviewPlan from "./Steps/PreviewPlan";
 import TransferTo from "./Steps/TransferTo";
@@ -34,8 +34,8 @@ const CreatePlans = (props) => {
 
         break;
       case 1:
-        if (!selectedPlan) {
-          message.error("Vui lòng chọn một kế hoạch hoặc tạo mới !");
+        if (!selectedPlan || !planName) {
+          message.error("Vui lòng chọn một kế hoạch và Tên kế hoạch !");
         } else nextSteps();
         break;
       case 2:
@@ -54,10 +54,10 @@ const CreatePlans = (props) => {
       // defaultSuppervisorId: selectedSupervisor.id,
       // defaultSuppervisorName: `${selectedSupervisor.internalUser.firstName} ${selectedSupervisor.internalUser.lastName}`,
       serviceManager: {
-        id: selectedManager.id
+        id: selectedManager.id,
       },
       suppervisor: {
-        id: selectedSupervisor.id
+        id: selectedSupervisor.id,
       },
       name: planName,
       // serviceManagerId: selectedManager.id,
@@ -76,7 +76,7 @@ const CreatePlans = (props) => {
         svcPlanPartDTOList: [
           {
             svcSpendTask: {
-              id: plan.id
+              id: plan.id,
             },
             startAt: plan.startAt,
             endAt: plan.endAt,
@@ -119,17 +119,17 @@ const CreatePlans = (props) => {
     },
     {
       title: "Lịch làm việc",
-      icon: <FileAddOutlined />,
+      icon: <ApartmentOutlined />,
       content: <CreatePlanUnits selectedPlan={selectedPlan} setSelectedPlan={setSelectedPlan} />,
     },
     {
       title: "Xác nhận thông tin",
-      icon: <FileAddOutlined />,
+      icon: <MonitorOutlined />,
       content: <PreviewPlan selectedContract={selectedContract} selectedPlan={selectedPlan} setSelectedPlan={setSelectedPlan} />,
     },
     {
       title: "Chuyển tiếp thông tin",
-      icon: <FileAddOutlined />,
+      icon: <SendOutlined />,
       content: <TransferTo setSelectedManager={setSelectedManager} setSelectedSupervisor={setSelectedSupervisor} />,
     },
   ];

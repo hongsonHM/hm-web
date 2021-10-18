@@ -44,7 +44,7 @@ function CollapsePanel(props) {
       okText: "Vẫn xóa",
       okType: "danger",
       cancelText: "Thôi",
-      width: '450px',
+      width: "450px",
       onOk() {
         deleteCollapsePanel(id);
       },
@@ -100,7 +100,8 @@ function CollapsePanel(props) {
         <Space className="flex__between__center">
           <TableInput
             actions={(frequency) => {
-              record.frequency = frequency;
+              if (record.frequency && record.frequency.includes("/")) record.frequency = `${frequency}/${record.frequency.split("/")[1]}`;
+              else record.frequency = frequency;
               props.setSubDivisions([...subDivisions]);
             }}
             disabled={!editStatus || selectedRecord !== record.coreTask.id}
@@ -110,7 +111,8 @@ function CollapsePanel(props) {
             size="middle"
             style={{ width: 120 }}
             onChange={(e) => {
-              record.frequency = `${record.frequency}/${e}`;
+              if (record.frequency && record.frequency.includes("/")) record.frequency = `${record.frequency.split("/")[0]}/${e}`;
+              else record.frequency = `${record.frequency}/${e}`;
               props.setSubDivisions([...subDivisions]);
             }}
             disabled={!editStatus || selectedRecord !== record.coreTask.id}
@@ -166,6 +168,7 @@ function CollapsePanel(props) {
         pagination={false}
         dataSource={sub.svcSpendTaskDTOs}
         columns={columns}
+        rowKey="index"
         locale={{
           emptyText: <span>Vui lòng chọn các đối tượng có trong khu vực!</span>,
         }}

@@ -39,7 +39,7 @@ function SelectContract(props) {
         {contracts &&
           contracts.map((contract, i) => (
             <Option key={contract.id} value={contract.id}>
-              {contract.client.customerName}
+              {contract.client.customerName} - {contract.documentId}
             </Option>
           ))}
       </Select>
@@ -51,7 +51,7 @@ function SelectContract(props) {
             <Descriptions.Item label="Địa chỉ">{selectedContract.client.address}</Descriptions.Item>
             <Descriptions.Item label="Ngày bắt đầu">{moment(selectedContract.effectiveTimeFrom).format("DD/MM/YYYY")}</Descriptions.Item>
             <Descriptions.Item label="Ngày kết thúc">{moment(selectedContract.effectiveTimeTo).format("DD/MM/YYYY")}</Descriptions.Item>
-            <Descriptions.Item label="Số lượng đối tượng">3 Tiểu bộ phận - 9 đối tượng</Descriptions.Item>
+            <Descriptions.Item label="Số lượng đối tượng">2 Tiểu bộ phận</Descriptions.Item>
             <Descriptions.Item label="Số lượng công">320 công</Descriptions.Item>
             {/* <Descriptions.Item label="Nội dung">{selectedContract.content}</Descriptions.Item> */}
           </Descriptions>

@@ -61,8 +61,9 @@ function CreatePlanUnits(props) {
     },
     {
       title: "Đối tượng",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "coreTask",
+      key: "coreTask",
+      render: value => value.name
     },
     {
       title: "Hóa chất",

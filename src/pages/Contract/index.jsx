@@ -154,6 +154,7 @@ const Contract = (props) => {
               dispatch(setCurrentContract(row));
               history.push(`/edit_contract?cid=${row.id}`);
             }}
+            disabled={row.status === 'PENDING'}
             type="primary"
             icon={<EditOutlined />}
           />

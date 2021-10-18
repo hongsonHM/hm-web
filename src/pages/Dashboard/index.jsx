@@ -1,5 +1,5 @@
 import React, { useState, Fragment, useEffect } from "react";
-import { Row, Col, Descriptions, Space, Select } from "antd";
+import { Row, Col, Descriptions, Modal, Select, Card, List, Typography } from "antd";
 import { StyledDashboardRow } from "./styled";
 import { GlobalContent, GlobalDescriptions } from "../../configs/styled.global";
 import { FieldTimeOutlined, FileSyncOutlined, FundViewOutlined, TeamOutlined, FileDoneOutlined, FileExclamationOutlined } from "@ant-design/icons";
@@ -10,10 +10,38 @@ import { friendlyStringMoney } from "../../utils";
 
 const { Option } = Select;
 
-const Dashboard = (props) => {
-  const [filter, setFilter] = useState("monthly");
-  const [dataOverview, setDataOverview] = useState({});
+const mock = [
+  {
+    id: 1,
+    title: "Tái ký hợp đồng Argibank",
+    time: "03/10/2021 - 17/10/2021",
+    content:
+      "Làm việc với Agribank Trung Hòa về việc gia hạn hợp đồng từ 25/10. Mời khách hàng tham gia ký theo phương thức mới. Hẹn lịch đo lường khối lượng đối lượng  thực tế chuyển cho QLDV.",
+    partner: "NNTH - NH Đầu tư phát triển Argibank",
+    type: "Tái ký",
+  },
+  {
+    id: 2,
+    title: "Tái ký hợp đồng Techcombank",
+    time: "29/10/2021 - 05/11/2021",
+    content:
+      "Làm việc với Tech NT Thập về việc gia hạn hợp đồng từ 29/10. Mời khách hàng tham gia ký theo phương thức mới. Hẹn lịch đo lường khối lượng đối lượng  thực tế chuyển cho QLDV.",
+    partner: "NNCT - NH TMCP Techcombank",
+    type: "Tái ký",
+  },
+  {
+    id: 3,
+    title: "Kiểm tra lịch làm việc với Vietcombank",
+    time: "22/10/2021",
+    content: "VCB Láng Hạ mới ký 11/10. QLDV Hương gửi lại để kiểm tra kế hoạch phân bổ nhiệm vụ.",
+    partner: "QLDV - Hương",
+    type: "Triển khai",
+  },
+];
 
+const Dashboard = (props) => {
+  const [dataOverview, setDataOverview] = useState({});
+  const [visibleModal, setVisibleModal] = useState(false);
   const getDataOverview = async () => {
     const res = await getDashboard();
     console.log(res);
@@ -47,7 +75,7 @@ const Dashboard = (props) => {
 
   const renderDashboardContent = () => {
     return overview.map((item, index) => (
-      <Col className={`overview_item flex__start__center ${item.className}`} span={7} key={index}>
+      <Col className={`overview_item flex__start__center ${item.className}`} span={7} key={index} onClick={() => setVisibleModal(true)}>
         <div className="overview_icon">{item.icon}</div>
         <div className="overview_content">
           <div className="overview_number">
@@ -133,6 +161,43 @@ const Dashboard = (props) => {
           </Col>
         </Row>
       </Fragment>
+
+      <Modal
+        className="task-list"
+        width="70vw"
+        title="Danh sách nhiệm vụ"
+        visible={visibleModal}
+        onOk={() => setVisibleModal(false)}
+        onCancel={() => setVisibleModal(false)}
+      >
+        <List
+          header={null}
+          footer={null}
+          bordered={false}
+          dataSource={mock}
+          renderItem={(item) => (
+            <List.Item>
+              <Card
+                style={{ width: "100%" }}
+                size="small"
+                className="card-task-items"
+                title={
+                  <div className="flex__between__center">
+                    {item.title + "  -  "  + item.type}
+                    <Typography.Text italic type="success">
+                      {item.time}
+                    </Typography.Text>
+                  </div>
+                }
+              >
+                <Typography.Text>{item.content}</Typography.Text>
+                <br />
+                <Typography.Text>Phối hợp: {item.partner}</Typography.Text>
+              </Card>
+            </List.Item>
+          )}
+        />
+      </Modal>
     </GlobalContent>
   );
 };

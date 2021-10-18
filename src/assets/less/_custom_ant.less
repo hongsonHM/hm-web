@@ -187,6 +187,42 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.ant-card.card-task-items {
+  border-color: #3eb8f850;
+  cursor: pointer;
+  box-shadow: 0 0px 0px #3eb8f850;
+  transition: all 0.3s ease;
+  .ant-card-head {
+    background-color: #3eb8f830;
+  }
+  .ant-card-body {
+    position: relative;
+  }
+
+  &:hover {
+    box-shadow: 0 2px 4px #3eb8f850;
+  }
+
+  .card-task-items__type {
+    position: absolute;
+    height: 100%;
+    width: 30px;
+    background-color: #ffbb0030;
+    right: 0;
+    top: 0;
+  }
+}
+
+.ant-modal.task-list {
+  .ant-modal-body {
+    padding: 12px 24px;
+  }
+
+  .ant-list-item {
+    border: none;
+  }
 }
