@@ -1,0 +1,54 @@
+#receive_information {
+  .ant-select {
+    width: 200px;
+  }
+
+  .ant-space {
+    margin: 0 0 15px;
+    .filter-result {
+      font-size: 15px;
+    }
+  }
+  .information-items {
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px #000;
+    border-bottom-width: 4px;
+    .ant-typography {
+      margin-bottom: 10px;
+    }
+
+    .ant-card-head {
+      border-radius: 20px 20px 0 0;
+    }
+
+    &.--success {
+      border-color: #209f8580;
+      box-shadow: 0 2px 6px #209f8550;
+      .ant-card-head {
+        background-color: #209f8520;
+      }
+    }
+    &.--reject {
+      border-color: #ee2a2a80;
+      box-shadow: 0 2px 6px #ee2a2a50;
+      .ant-card-head {
+        background-color: #ee2a2a20;
+      }
+    }
+    &.--infomation {
+      border-color: #3eb8f880;
+      box-shadow: 0 2px 6px #3eb8f850;
+      .ant-card-head {
+        background-color: #3eb8f820;
+      }
+    }
+    &.--warning {
+      border-color: #ffbb0080;
+      box-shadow: 0 2px 6px #209f8550;
+      .ant-card-head {
+        background-color: #ffbb0020;
+      }
+    }
+  }
+}

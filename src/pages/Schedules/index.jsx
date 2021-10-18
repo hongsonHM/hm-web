@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from "react";
 import GlobalTitle from "../../components/GlobalTitle";
 import { GlobalContent } from "../../configs/styled.global";
-import { Select, Button, Empty, Descriptions, Typography, Modal, Divider, Drawer, Space } from "antd";
-import { getAllContract } from "../../apis/contract";
+import { Select, Button, Empty, Descriptions, Typography, Modal, Divider, Drawer, Space, message, Tag } from "antd";
+import { getContractByStatus } from "../../apis/contract";
 import { StyledTable } from "../../assets/styled/table.styled";
 import { LoadingOutlined } from "@ant-design/icons";
 import SwitchStatus from "./Components/SwitchStatus";
 import moment from "moment";
-import CreateScheduleForm from "./Components/CreateScheduleForm";
+import ReportPlanForm from "./Components/CreateScheduleForm";
 import SchedulesUnit from "./Components/SchedulesUnit";
-import { getAllSchedulesByContractId, getAllSchedules } from "../../apis/schedules";
+import { getAllSchedulesByContractId, getAllSchedules, updatePlan } from "../../apis/schedules";
+import { useHistory } from "react-router-dom";
 
 const { Option } = Select;
+const ROLES = localStorage.roles;
 const Schedules = (props) => {
+  let history = useHistory();
   const [contracts, setContracts] = useState();
   const [selectedContract, setSelectedContract] = useState();
   const [schedules, setSchedules] = useState();
@@ -22,7 +25,7 @@ const Schedules = (props) => {
 
   // Get all contract by status = SUCCESS
   const fetchContracts = async () => {
-    const response = await getAllContract();
+    const response = await getContractByStatus("SUCCESS");
     setContracts(response.data);
   };
 
@@ -49,6 +52,48 @@ const Schedules = (props) => {
       fetchSchedulesById();
     } else fetchSchedules();
   }, [selectedContract]);
+
+  const onAcceptPlan = async (record) => {
+    const response = await updatePlan(record.id, { id: record.id, active: true });
+    record.active = true;
+    message.success("Đã tiếp nhận kế hoạch!");
+  };
+
+  const renderStatus = (active, record) => { 
+    // switch (active) {
+    //   case 'SUCCESS':
+        
+    //     break;
+    
+    //   default:
+    //     break;
+    // }
+    return ROLES === "SUPERVISOR" ? (
+      <Space>
+        <Button
+          type="primary"
+          onClick={(e) => {
+            e.stopPropagation();
+            onAcceptPlan(record);
+          }}
+        >
+          Xác nhận
+        </Button>
+        <Button
+          type="primary"
+          danger
+          onClick={(e) => {
+            e.stopPropagation();
+            setModalVisible(true);
+          }}
+        >
+          Báo cáo
+        </Button>
+      </Space>
+    ) : (
+      <Tag color="success">Đang chạy</Tag>
+    );
+  }
 
   const columns = [
     {
@@ -79,34 +124,19 @@ const Schedules = (props) => {
       title: "Trạng thái",
       key: "active",
       dataIndex: "active",
-      render: (active) => {
-        return <SwitchStatus checked={active} />;
-      },
-      filters: [
-        {
-          text: "Đang hoạt động",
-          value: true,
-        },
-        {
-          text: "Không hoạt động",
-          value: false,
-        },
-      ],
-      onFilter: (value, record) => {
-        return record.active === value;
-      },
+      render: (active, record) => renderStatus(active, record) 
     },
   ];
 
   const ButtonCreateSchedule = () => (
-    <Button danger type="primary" disabled={selectedContract ? false : true} onClick={() => setModalVisible(true)}>
+    <Button danger type="primary" onClick={() => history.push("/create_plans")}>
       + Tạo mới kế hoạch
     </Button>
   );
 
   return (
     <GlobalContent key="create_plan" className="site-drawer-render-in-current-wrapper">
-      <GlobalTitle title="Quản lý kế hoạch" level={3} color="#3eb8f8" extra={<ButtonCreateSchedule />} />
+      <GlobalTitle title="Quản lý kế hoạch" level={3} color="#3eb8f8" extra={ROLES === "SUPERVISOR" ? null : <ButtonCreateSchedule />} />
 
       <Select
         showSearch
@@ -123,7 +153,7 @@ const Schedules = (props) => {
         {contracts &&
           contracts.map((contract, i) => (
             <Option key={contract.id} value={contract.id}>
-              {contract.client.customerName}
+              {contract.client.customerName} - {contract.documentId}
             </Option>
           ))}
       </Select>
@@ -161,7 +191,7 @@ const Schedules = (props) => {
           emptyText: (
             <>
               <p>Chưa có kế hoạch nào cho hợp đồng này!</p>
-              <ButtonCreateSchedule />
+              {ROLES === "SUPERVISOR" ? null : <ButtonCreateSchedule />}
             </>
           ),
         }}
@@ -172,8 +202,8 @@ const Schedules = (props) => {
       />
 
       {/* Modal add new Schedules */}
-      <Modal footer={null} title="Thêm mới kế hoạch" visible={modalVisible} onOk={() => setModalVisible(false)} onCancel={() => setModalVisible(false)}>
-        <CreateScheduleForm fetchSchedules={fetchSchedulesById} selectedContract={selectedContract} setModalVisible={setModalVisible} />
+      <Modal footer={null} title="Báo cáo kế hoạch tới QLDV" visible={modalVisible} onOk={() => setModalVisible(false)} onCancel={() => setModalVisible(false)}>
+        <ReportPlanForm fetchSchedules={fetchSchedulesById} selectedPlan={selectedPlan} setModalVisible={setModalVisible} />
       </Modal>
 
       {/* Drawer list all Schedules Unit when selected a Schedule */}

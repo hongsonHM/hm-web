@@ -21,9 +21,9 @@ export const roles = {
       path: "/create_plans",
     },
     {
-      name: "Tiếp nhận nhiệm vụ",
-      key: "add_user",
-      path: "/add_user",
+      name: "Tiếp nhận thông tin",
+      key: "receive_information",
+      path: "/receive_information",
     },
     {
       name: "Thông tin bộ phận",
@@ -131,8 +131,8 @@ export const roles = {
     },
     {
       name: "Tiếp nhận kế hoạch",
-      key: "add_user",
-      path: "/add_user",
+      key: "receive_information",
+      path: "/receive_information",
     },
     {
       name: "Thông tin bộ phận",

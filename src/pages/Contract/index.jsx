@@ -6,7 +6,7 @@ import { Modal, Button, Space, Tag, Tabs } from "antd";
 import { friendlyStringMoney } from "../../utils";
 import moment from "moment";
 import {
-  CloudUploadOutlined,
+  EyeOutlined,
   EditOutlined,
   SyncOutlined,
   CheckCircleOutlined,
@@ -156,6 +156,16 @@ const Contract = (props) => {
             }}
             type="primary"
             icon={<EditOutlined />}
+          />
+          <Button
+            onClick={(e) => {
+              setSelectedContract(row);
+              e.stopPropagation();
+              dispatch(setCurrentContract(row));
+              history.push(`/contract_details?cid=${row.id}`);
+            }}
+            type="primary"
+            icon={<EyeOutlined />}
           />
           {row.status === "unrequest" && <Button type="primary">Y/C Phê duyệt</Button>}
         </Space>

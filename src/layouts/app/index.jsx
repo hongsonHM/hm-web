@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import contents from "./contents";
 import Header from "../../components/Header";
 import hm_logo from "../../assets/images/hm_logo.png";
+import NotFound from '../notfound'
 
 const App = (props) => {
   let { loading, msg } = props;
@@ -29,7 +30,7 @@ const App = (props) => {
       </StyledSider>
       <StyledLayout className="site-layout flex__center__center">
         <Header />
-        {contents.find((element) => element.param === param).component()}
+        {contents.find((element) => element.param === param) ? contents.find((element) => element.param === param).component() : <NotFound />}
       </StyledLayout>
       {/* <Loading /> */}
     </Layout>

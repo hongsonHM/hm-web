@@ -2,7 +2,7 @@ import React from 'react';
 
 function NotFound(props) {
   return (
-    <h1>Page Not Found</h1>
+    <h1>Trang bạn tìm kiếm không tồn tại</h1>
   );
 }
 

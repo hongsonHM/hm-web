@@ -16,6 +16,11 @@ export const getScheduleById = (id) => {
 export const createSchedule = (data) => {
   return retryHandleApis("/svc-plans", "POST", data);
 };
+
+export const updatePlan = (id, data) => {
+  return retryHandleApis(`/svc-plans/${id}`, "PUT", data);
+};
+
 export const createPlan = (data) => {
   return retryHandleApis("/svc-full-plans", "POST", data);
 };

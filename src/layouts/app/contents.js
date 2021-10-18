@@ -15,6 +15,7 @@ import Schedules from '../../pages/Schedules'
 import SchedulesRecord from '../../pages/SchedulesRecord'
 import DivisionInfor from '../../pages/DivisionInfor'
 import CreatePlans from '../../pages/CreatePlans'
+import ReceiveInformation from '../../pages/ReceiveInformation'
 
 const contents = [
   {
@@ -63,7 +64,7 @@ const contents = [
   },
   {
     param: "contract_details",
-    component: () => <EditContract />
+    component: () => <ContractDetails />
   },
   {
     param: "edit_contract",
@@ -84,6 +85,10 @@ const contents = [
   {
     param: "create_plans",
     component: () => <CreatePlans />
+  },
+  {
+    param: "receive_information",
+    component: () => <ReceiveInformation />
   }
 ]
 
