@@ -55,6 +55,7 @@ function AddObjectStep(props) {
     if (!plainOptions) {
       fetchCoreTasks();
     }
+    console.log(plainOptions);
   }, [plainOptions]);
 
   const saveNameSubDivision = () => {

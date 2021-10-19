@@ -197,7 +197,7 @@ export const buildingObject = [
 export const buildingObjName = (obj) => {
   const arr = [];
   for (const property in obj) {
-    arr.push(obj[property].name);
+    arr.push(obj[property].name || 'Chưa có tên' );
   }
   return arr;
 };

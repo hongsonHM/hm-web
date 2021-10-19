@@ -8,11 +8,11 @@ const { Option } = Select;
 const { confirm } = Modal;
 
 const TableInput = (props) => {
-  const { disabled, record } = props;
+  const { disabled, type } = props;
   const [value, setValue] = useState();
   return (
     <Input
-      type="number"
+      type={type || "number"}
       disabled={disabled}
       size="middle"
       value={value}
@@ -138,6 +138,7 @@ function CollapsePanel(props) {
           }}
           disabled={!editStatus || selectedRecord !== record.coreTask.id}
           value={value}
+          type="string"
         />
       ),
     },

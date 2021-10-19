@@ -66,7 +66,7 @@ function CreatePlan(props) {
               : "Hợp đồng không có tiểu bộ phận! "}
           </Radio.Group>
         </TabPane>
-        <TabPane tab="Chọn đối tượng" key="2">
+        {/* <TabPane tab="Chọn đối tượng" key="2">
           <Checkbox.Group style={{ width: "100%" }} onChange={onChange}>
             <Row>
               {coreTasks &&
@@ -77,7 +77,7 @@ function CreatePlan(props) {
                 ))}
             </Row>
           </Checkbox.Group>
-        </TabPane>
+        </TabPane> */}
       </Tabs>
      
     </div>
