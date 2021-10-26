@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Typography, Modal, Checkbox } from "antd";
+import { Button, Typography, Modal, Checkbox, Table } from "antd";
 import { StyledTable } from "../../../assets/styled/table.styled";
 import { getAllPlanUnitByPlanId } from "../../../apis/schedules";
 import SelectLaborer from "./SelectLaborer";
@@ -10,15 +10,21 @@ function SchedulesUnit(props) {
   const [modalSelectLabor, setModalSelectLabor] = useState(false);
 
   const renderValueByText = (value, key) => {
-    let day = value[0].workOnDays.split(",").filter((work) => work.includes(key))[0]
-    return day ? day.split("-")[1] : 0
-  }
+    let day = value[0].workOnDays.split(",").filter((work) => work.includes(key))[0];
+    return <Checkbox style={{ transform: "scale(1.5)" }} checked={day ? true : false} disabled={day ? false : true} />;
+  };
+
+  const fetchPlanUnits = async () => {
+    const res = await getAllPlanUnitByPlanId(selectedPlan.id);
+    setPlanUnits(res.data.svcPlanUnitDTOList);
+  };
 
   const columns = [
     {
       title: "Vị trí",
-      dataIndex: "location",
-      key: "location",
+      dataIndex: "svcPlanPartDTOList",
+      key: "svcPlanPartDTOList",
+      render: value =>  value[0].svcSpendTask.svcGroupTask.svcArea.name
     },
     {
       title: "Bắt đầu",
@@ -35,31 +41,48 @@ function SchedulesUnit(props) {
       title: "Đối tượng",
       dataIndex: "svcPlanPartDTOList",
       key: "svcPlanPartDTOList",
-      render: value => value[0].svcSpendTask.coreTask.name
+      render: (value) => value[0].svcSpendTask.coreTask.name,
     },
     {
       title: "Hóa chất",
-      dataIndex: "hc",
-      key: "hc",
-      render: () => 0,
+      dataIndex: "svcPlanPartDTOList",
+      key: "svcPlanPartDTOList",
+      render: (value) => {
+        return value[0].svcSpendTask.coreTask.coreSupplies
+          .filter((supplies) => supplies.category === "Hóa chất")
+          .reduce((a, b) => a + b.effort * 1, 0)
+          .toFixed(3);
+      },
     },
     {
       title: "Máy móc",
-      dataIndex: "mm",
-      key: "mm",
-      render: () => 0,
+      dataIndex: "svcPlanPartDTOList",
+      key: "svcPlanPartDTOList",
+      render: (value) =>
+        value[0].svcSpendTask.coreTask.coreSupplies
+          .filter((supplies) => supplies.category === "Máy móc, thiết bị")
+          .reduce((a, b) => a + b.effort * 1, 0)
+          .toFixed(3),
     },
     {
       title: "CCDC",
-      dataIndex: "",
-      key: "",
-      render: () => 1,
+      dataIndex: "svcPlanPartDTOList",
+      key: "svcPlanPartDTOList",
+      render: (value) =>
+        value[0].svcSpendTask.coreTask.coreSupplies
+          .filter((supplies) => supplies.category === "Công cụ, vật tư")
+          .reduce((a, b) => a + b.effort * 1, 0)
+          .toFixed(3),
     },
     {
       title: "Công",
-      dataIndex: "nc",
-      key: "nc",
-      render: () => 1,
+      dataIndex: "svcPlanPartDTOList",
+      key: "svcPlanPartDTOList",
+      render: (value) =>
+        value[0].svcSpendTask.coreTask.coreSupplies
+          .filter((supplies) => supplies.category === "Nhân công")
+          .reduce((a, b) => a + b.effort * 1, 0)
+          .toFixed(3),
     },
     {
       title: "Tần suất",
@@ -68,46 +91,46 @@ function SchedulesUnit(props) {
       render: (value) => `${value.split("/")[0]} lần / ${value.split("/")[1]}`,
     },
     {
-      title: "Thứ 2",
+      title: "T2",
       dataIndex: "svcPlanPartDTOList",
       key: "svcPlanPartDTOList",
-      render: (value) => renderValueByText(value, 'mon')
+      render: (value) => renderValueByText(value, "mon"),
     },
     {
-      title: "Thứ 3",
+      title: "T3",
       dataIndex: "svcPlanPartDTOList",
       key: "svcPlanPartDTOList",
-      render: (value) =>renderValueByText(value, 'tue')
+      render: (value) => renderValueByText(value, "tue"),
     },
     {
-      title: "Thứ 4",
+      title: "T4",
       dataIndex: "svcPlanPartDTOList",
       key: "svcPlanPartDTOList",
-      render: (value) => renderValueByText(value, 'wed')
+      render: (value) => renderValueByText(value, "wed"),
     },
     {
-      title: "Thứ 5",
+      title: "T5",
       dataIndex: "svcPlanPartDTOList",
       key: "svcPlanPartDTOList",
-      render: (value) => renderValueByText(value, 'thu')
+      render: (value) => renderValueByText(value, "thu"),
     },
     {
-      title: "Thứ 6",
+      title: "T6",
       dataIndex: "svcPlanPartDTOList",
       key: "svcPlanPartDTOList",
-      render: (value) => renderValueByText(value, 'fri')
+      render: (value) => renderValueByText(value, "fri"),
     },
     {
-      title: "Thứ 7",
+      title: "T7",
       dataIndex: "svcPlanPartDTOList",
       key: "svcPlanPartDTOList",
-      render: (value) => renderValueByText(value, 'sat')
+      render: (value) => renderValueByText(value, "sat"),
     },
     {
       title: "Chủ nhật",
       dataIndex: "svcPlanPartDTOList",
       key: "svcPlanPartDTOList",
-      render: (value) => renderValueByText(value, 'sun')
+      render: (value) => renderValueByText(value, "sun"),
     },
     {
       title: "Nhân công",
@@ -115,11 +138,6 @@ function SchedulesUnit(props) {
       key: "",
     },
   ];
-
-  const fetchPlanUnits = async () => {
-    const res = await getAllPlanUnitByPlanId(selectedPlan.id);
-    setPlanUnits(res.data.svcPlanUnitDTOList);
-  };
 
   useEffect(() => {
     fetchPlanUnits();
@@ -130,9 +148,10 @@ function SchedulesUnit(props) {
       <Typography.Title level={5} className="flex__between__center">
         {planUnits && planUnits.length ? `${planUnits.length} nhiệm vụ được hiển thị` : `Không có nhiệm vụ nào!`}
       </Typography.Title>
-      <StyledTable
+      <Table
         columns={columns}
         dataSource={planUnits}
+        rowKey="id"
         locale={{
           emptyText: (
             <>

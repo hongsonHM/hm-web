@@ -1,8 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Table, Input } from "antd";
+import { Button, Modal, Table, Input, Checkbox } from "antd";
 import SelectLaborer from "./SelectLaborer";
 import { EditOutlined } from "@ant-design/icons";
 import ToggleEditInputStatus from "../../../components/ToggleEditInputStatus";
+
+const TableCheckbox = (props) => {
+  const { disabled, type } = props;
+  const [value, setValue] = useState();
+  return (
+    <Checkbox
+      style={{ transform: "scale(1.5)" }}
+      // type={type || "number"}
+      disabled={disabled}
+      size="middle"
+      value={value}
+      onChange={(e) => {
+        setValue(e.target.checked);
+        props.actions(e.target.checked ? 1 : 0);
+      }}
+    />
+  );
+};
 
 const TableInput = (props) => {
   const { disabled, type } = props;
@@ -28,8 +46,8 @@ function CreatePlanUnits(props) {
   const [editStatus, setEditStatus] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
 
-  const renderInputInTable = (value, record, key, type) => (
-    <TableInput
+  const renderCheckboxInTable = (value, record, key, type) => (
+    <TableCheckbox
       type={type}
       actions={(e) => {
         record[key] = e;
@@ -51,43 +69,83 @@ function CreatePlanUnits(props) {
       title: "Bắt đầu",
       dataIndex: "startAt",
       key: "startAt",
-      render: (value, record) => renderInputInTable(value, record, "startAt", "string"),
+      render: (value, record) => (
+        <TableInput
+          type={"string"}
+          actions={(e) => {
+            record["startAt"] = e;
+            props.setSelectedPlan([...selectedPlan]);
+          }}
+          disabled={!editStatus || selectedRecord !== record.id}
+          value={value || 0}
+          record={record}
+        />
+      ),
     },
     {
       title: "Kết thúc",
       dataIndex: "endAt",
       key: "endAt",
-      render: (value, record) => renderInputInTable(value, record, "endAt", "string"),
+      render: (value, record) => (
+        <TableInput
+          type={"string"}
+          actions={(e) => {
+            record["endAt"] = e;
+            props.setSelectedPlan([...selectedPlan]);
+          }}
+          disabled={!editStatus || selectedRecord !== record.id}
+          value={value || 0}
+          record={record}
+        />
+      ),
     },
     {
       title: "Đối tượng",
       dataIndex: "coreTask",
       key: "coreTask",
-      render: value => value.name
+      render: (value) => value.name,
     },
     {
       title: "Hóa chất",
-      dataIndex: "hc",
-      key: "hc",
-      render: () => 0,
+      dataIndex: "coreTask",
+      key: "coreTask",
+      render: (value) => {
+        console.log(value.coreSupplies.filter((supplies) => supplies.category === "Hóa chất"));
+        return value.coreSupplies
+          .filter((supplies) => supplies.category === "Hóa chất")
+          .reduce((a, b) => a + b.effort * 1, 0)
+          .toFixed(3);
+      },
     },
     {
       title: "Máy móc",
-      dataIndex: "mm",
-      key: "mm",
-      render: () => 0,
+      dataIndex: "coreTask",
+      key: "coreTask",
+      render: (value) =>
+        value.coreSupplies
+          .filter((supplies) => supplies.category === "Máy móc, thiết bị")
+          .reduce((a, b) => a + b.effort * 1, 0)
+          .toFixed(3),
     },
     {
       title: "CCDC",
-      dataIndex: "",
-      key: "",
-      render: () => 1,
+      dataIndex: "coreTask",
+      key: "coreTask",
+      render: (value) =>
+        value.coreSupplies
+          .filter((supplies) => supplies.category === "Công cụ, vật tư")
+          .reduce((a, b) => a + b.effort * 1, 0)
+          .toFixed(3),
     },
     {
       title: "Công",
-      dataIndex: "nc",
-      key: "nc",
-      render: () => 1,
+      dataIndex: "coreTask",
+      key: "coreTask",
+      render: (value) =>
+        value.coreSupplies
+          .filter((supplies) => supplies.category === "Nhân công")
+          .reduce((a, b) => a + b.effort * 1, 0)
+          .toFixed(3),
     },
     {
       title: "Tần suất",
@@ -96,46 +154,46 @@ function CreatePlanUnits(props) {
       render: (value) => `${value.split("/")[0]} lần / ${value.split("/")[1]}`,
     },
     {
-      title: "Thứ 2",
+      title: "T2",
       dataIndex: "mon",
       key: "mon",
-      render: (value, record) => renderInputInTable(value, record, "mon"),
+      render: (value, record) => renderCheckboxInTable(value, record, "mon"),
     },
     {
-      title: "Thứ 3",
+      title: "T3",
       dataIndex: "tue",
       key: "tue",
-      render: (value, record) => renderInputInTable(value, record, "tue"),
+      render: (value, record) => renderCheckboxInTable(value, record, "tue"),
     },
     {
-      title: "Thứ 4",
+      title: "T4",
       dataIndex: "wed",
       key: "wed",
-      render: (value, record) => renderInputInTable(value, record, "wed"),
+      render: (value, record) => renderCheckboxInTable(value, record, "wed"),
     },
     {
-      title: "Thứ 5",
+      title: "T5",
       dataIndex: "thu",
       key: "thu",
-      render: (value, record) => renderInputInTable(value, record, "thu"),
+      render: (value, record) => renderCheckboxInTable(value, record, "thu"),
     },
     {
-      title: "Thứ 6",
+      title: "T6",
       dataIndex: "fri",
       key: "fri",
-      render: (value, record) => renderInputInTable(value, record, "fri"),
+      render: (value, record) => renderCheckboxInTable(value, record, "fri"),
     },
     {
-      title: "Thứ 7",
+      title: "T7",
       dataIndex: "sat",
       key: "sat",
-      render: (value, record) => renderInputInTable(value, record, "sat"),
+      render: (value, record) => renderCheckboxInTable(value, record, "sat"),
     },
     {
-      title: "Chủ nhật",
+      title: "CN",
       dataIndex: "sun",
       key: "sun",
-      render: (value, record) => renderInputInTable(value, record, "sun"),
+      render: (value, record) => renderCheckboxInTable(value, record, "sun"),
     },
     {
       title: "Nhân công",

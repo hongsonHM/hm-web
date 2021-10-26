@@ -20,6 +20,7 @@ const CreatePlans = (props) => {
   const [selectedManager, setSelectedManager] = useState();
   const [selectedSupervisor, setSelectedSupervisor] = useState();
   const [planName, setPlanName] = useState();
+  const [supplies, setSupplies] = useState();
 
   const nextSteps = () => {
     setCurrent(current + 1);
@@ -100,7 +101,9 @@ const CreatePlans = (props) => {
     {
       title: "Chọn hợp đồng",
       icon: <FileSearchOutlined />,
-      content: <SelectContract selectedContract={selectedContract} setSelectedContract={setSelectedContract} selectedPlan={selectedPlan} />,
+      content: (
+        <SelectContract setSupplies={setSupplies} selectedContract={selectedContract} setSelectedContract={setSelectedContract} selectedPlan={selectedPlan} />
+      ),
     },
     {
       title: "Khởi tạo kế hoạch",
@@ -120,7 +123,7 @@ const CreatePlans = (props) => {
     {
       title: "Lịch làm việc",
       icon: <ApartmentOutlined />,
-      content: <CreatePlanUnits selectedPlan={selectedPlan} setSelectedPlan={setSelectedPlan} />,
+      content: <CreatePlanUnits supplies={supplies} selectedPlan={selectedPlan} setSelectedPlan={setSelectedPlan} />,
     },
     {
       title: "Xác nhận thông tin",

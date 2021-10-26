@@ -102,32 +102,32 @@ export const mockScheduleUnits = [
 export const mockLaborer = [
   {
     id: 1,
-    name: 'Oggy',
-    phone: '+43 882-221'
+    name: 'Nguyễn Hữu Toàn',
+    phone: '+84 353 881 090'
   },
   {
     id: 2,
-    name: 'Jack',
-    phone: '+62 324-432'
+    name: 'Cao Thành Tiến',
+    phone: '+84 353 119 808'
   },
   {
     id: 3,
-    name: 'Bob',
-    phone: '+61 009-711'
+    name: 'Ngô Thị Hòa',
+    phone: '+84 353 009 711'
   },
   {
     id: 4,
-    name: 'Joe',
-    phone: '+55 092-814'
+    name: 'Nguyễn Bảo Tú',
+    phone: '+84 353 092 814'
   },
   {
     id: 6,
-    name: 'Marky',
-    phone: '+81 701-711'
+    name: 'Hoàng Hữu Việt',
+    phone: '+84 353 701 711'
   },
   {
     id: 7,
-    name: 'Dee Dee',
-    phone: '+41 610-914'
+    name: 'Bùi Quý Trung',
+    phone: '+84 353 610 914'
   }
 ]

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import GlobalTitle from "../../components/GlobalTitle";
 import { GlobalContent } from "../../configs/styled.global";
-import { Select, Button, Empty, Descriptions, Typography, Modal, Divider, Drawer, Space, message, Tag } from "antd";
+import { Select, Button, Empty, Descriptions, Typography, Modal, Divider, Drawer, Space, message, Tag, Breadcrumb } from "antd";
 import { getContractByStatus } from "../../apis/contract";
 import { StyledTable } from "../../assets/styled/table.styled";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -59,15 +59,7 @@ const Schedules = (props) => {
     message.success("Đã tiếp nhận kế hoạch!");
   };
 
-  const renderStatus = (active, record) => { 
-    // switch (active) {
-    //   case 'SUCCESS':
-        
-    //     break;
-    
-    //   default:
-    //     break;
-    // }
+  const renderStatus = (active, record) => {
     return ROLES === "SUPERVISOR" ? (
       <Space>
         <Button
@@ -93,7 +85,7 @@ const Schedules = (props) => {
     ) : (
       <Tag color="success">Đang chạy</Tag>
     );
-  }
+  };
 
   const columns = [
     {
@@ -124,7 +116,7 @@ const Schedules = (props) => {
       title: "Trạng thái",
       key: "active",
       dataIndex: "active",
-      render: (active, record) => renderStatus(active, record) 
+      render: (active, record) => renderStatus(active, record),
     },
   ];
 
@@ -208,7 +200,12 @@ const Schedules = (props) => {
 
       {/* Drawer list all Schedules Unit when selected a Schedule */}
       <Drawer
-        title="Danh sách nhiệm vụ"
+        title={
+          <Breadcrumb>
+            <Breadcrumb.Item>Kế hoạch</Breadcrumb.Item>
+            <Breadcrumb.Item>Danh sách nhiệm vụ</Breadcrumb.Item>
+          </Breadcrumb>
+        }
         placement="right"
         closable={true}
         onClose={() => setDrawerVisible(false)}

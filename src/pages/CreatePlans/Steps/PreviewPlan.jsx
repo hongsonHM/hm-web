@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Empty, Descriptions, Divider, Table, Button } from "antd";
+import { Empty, Descriptions, Divider, Table, Button, Checkbox } from "antd";
 import { GlobalDescriptions } from "../../../configs/styled.global";
 import moment from "moment";
 
@@ -29,27 +29,44 @@ function PreviewPlan(props) {
     },
     {
       title: "Hóa chất",
-      dataIndex: "hc",
-      key: "hc",
-      render: () => 0,
+      dataIndex: "coreTask",
+      key: "coreTask",
+      render: (value) => {
+        return value.coreSupplies
+          .filter((supplies) => supplies.category === "Hóa chất")
+          .reduce((a, b) => a + b.effort * 1, 0)
+          .toFixed(3);
+      },
     },
     {
       title: "Máy móc",
-      dataIndex: "mm",
-      key: "mm",
-      render: () => 0,
+      dataIndex: "coreTask",
+      key: "coreTask",
+      render: (value) =>
+        value.coreSupplies
+          .filter((supplies) => supplies.category === "Máy móc, thiết bị")
+          .reduce((a, b) => a + b.effort * 1, 0)
+          .toFixed(3),
     },
     {
       title: "CCDC",
-      dataIndex: "",
-      key: "",
-      render: () => 1,
+      dataIndex: "coreTask",
+      key: "coreTask",
+      render: (value) =>
+        value.coreSupplies
+          .filter((supplies) => supplies.category === "Công cụ, vật tư")
+          .reduce((a, b) => a + b.effort * 1, 0)
+          .toFixed(3),
     },
     {
       title: "Công",
-      dataIndex: "nc",
-      key: "nc",
-      render: () => 1,
+      dataIndex: "coreTask",
+      key: "coreTask",
+      render: (value) =>
+        value.coreSupplies
+          .filter((supplies) => supplies.category === "Nhân công")
+          .reduce((a, b) => a + b.effort * 1, 0)
+          .toFixed(3),
     },
     {
       title: "Tần suất",
@@ -58,39 +75,46 @@ function PreviewPlan(props) {
       render: (value) => `${value.split("/")[0]} lần / ${value.split("/")[1]}`,
     },
     {
-      title: "Thứ 2",
+      title: "T2",
       dataIndex: "mon",
       key: "mon",
+      render: (value) => <Checkbox checked={value ? true : false} style={{ transform: "scale(1.5)" }} />,
     },
     {
-      title: "Thứ 3",
+      title: "T3",
       dataIndex: "tue",
       key: "tue",
+      render: (value) => <Checkbox checked={value ? true : false} style={{ transform: "scale(1.5)" }} />,
     },
     {
-      title: "Thứ 4",
+      title: "T4",
       dataIndex: "wed",
       key: "wed",
+      render: (value) => <Checkbox checked={value ? true : false} style={{ transform: "scale(1.5)" }} />,
     },
     {
-      title: "Thứ 5",
+      title: "T5",
       dataIndex: "thu",
       key: "thu",
+      render: (value) => <Checkbox checked={value ? true : false} style={{ transform: "scale(1.5)" }} />,
     },
     {
-      title: "Thứ 6",
+      title: "T6",
       dataIndex: "fri",
       key: "fri",
+      render: (value) => <Checkbox checked={value ? true : false} style={{ transform: "scale(1.5)" }} size="middle" />,
     },
     {
-      title: "Thứ 7",
+      title: "T7",
       dataIndex: "sat",
       key: "sat",
+      render: (value) => <Checkbox checked={value ? true : false} style={{ transform: "scale(1.5)" }} size="middle" />,
     },
     {
-      title: "Chủ nhật",
+      title: "CN",
       dataIndex: "sun",
       key: "sun",
+      render: (value) => <Checkbox checked={value ? true : false} style={{ transform: "scale(1.5)" }} size="middle" />,
     },
     {
       title: "Nhân công",
@@ -98,7 +122,6 @@ function PreviewPlan(props) {
       key: "",
     },
   ];
-  console.log(selectedPlan);
   return (
     <div>
       {selectedContract ? (
@@ -119,7 +142,7 @@ function PreviewPlan(props) {
           <Descriptions.Item label="Địa chỉ">{selectedContract.client.address}</Descriptions.Item>
           <Descriptions.Item label="Ngày bắt đầu">{moment(selectedContract.effectiveTimeFrom).format("DD/MM/YYYY")}</Descriptions.Item>
           <Descriptions.Item label="Ngày kết thúc">{moment(selectedContract.effectiveTimeTo).format("DD/MM/YYYY")}</Descriptions.Item>
-          <Descriptions.Item label="Số lượng đối tượng">3 Tiểu bộ phận - 9 đối tượng</Descriptions.Item>
+          {/* <Descriptions.Item label="Số lượng đối tượng">3 Tiểu bộ phận - 9 đối tượng</Descriptions.Item> */}
           {/* <Descriptions.Item label="Nội dung">{selectedContract.content}</Descriptions.Item> */}
         </GlobalDescriptions>
       ) : (
